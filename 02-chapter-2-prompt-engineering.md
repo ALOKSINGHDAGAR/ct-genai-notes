@@ -374,3 +374,138 @@ the same mistakes. This connects to Chapter 5, where it becomes an organisationa
     **API:** changing request/response formats, endpoints and authentication (AI adapts to evolving
     specs and generates varied data).
 </details>
+
+---
+
+# Practice questions — Chapter 2
+
+*Sixteen questions. The real exam asks **11** from this chapter — 6 worth 1 point and
+**5 worth 2 points**. The 2-point ones are marked **[SCENARIO]** below; give those the most attention.*
+
+**1.** Which of the following is a component of a structured prompt?
+- a) Temperature
+- b) Output format
+- c) Token limit
+- d) Model selection
+
+**2.** In a structured prompt, what is the purpose of Constraints?
+- a) To describe the background situation of the test object
+- b) To specify how instructions should be applied to input data
+- c) To define the persona the model should adopt
+- d) To supply the user stories to be processed
+
+**3.** A prompt provides a single worked example of the required output. This is:
+- a) Zero-shot prompting
+- b) One-shot prompting
+- c) Few-shot prompting
+- d) Meta prompting
+
+**4.** Which statement describes meta prompting?
+- a) Splitting a task into steps and verifying each one
+- b) Providing several examples so the model copies a pattern
+- c) Using the model to generate or refine prompts, which the tester then evaluates
+- d) Setting a hidden instruction that persists across the session
+
+**5.** Which best describes the relationship between system and user prompts?
+- a) The system prompt changes with every interaction; the user prompt stays constant
+- b) The model considers both together when generating a response
+- c) The user prompt overrides the system prompt
+- d) Only one of the two can be used in any given session
+
+**6. [SCENARIO]** A tester must produce test cases for 40 user stories, all in the same
+organisation-specific table format with fixed column headings. Which technique is most appropriate?
+- a) Zero-shot prompting
+- b) Few-shot prompting
+- c) Meta prompting
+- d) Increasing the context window
+
+**7. [SCENARIO]** A test analyst needs GenAI to analyse a complex set of requirements, and wants to
+confirm the output is correct at each stage before building on it. Which technique fits best?
+- a) Few-shot prompting
+- b) Prompt chaining
+- c) Zero-shot prompting
+- d) Lowering the temperature
+
+**8. [SCENARIO]** A team is introducing GenAI for a test activity nobody has automated before, and
+no one is confident how to phrase the request. Which technique should they start with?
+- a) Meta prompting
+- b) Few-shot prompting
+- c) Prompt chaining
+- d) Fine-tuning
+
+**9. [SCENARIO]** A tester wants GenAI to analyse recent code changes so that regression testing can
+be concentrated where the risk is highest. Which application is this?
+- a) Self-healing and adaptive tests
+- b) Impact analysis and test optimization
+- c) Test data synthesis
+- d) Enhanced defect reporting
+
+**10. [SCENARIO]** GenAI is asked to produce synthetic customer records that resemble production
+data for testing a payments flow, without exposing any real customer information. Which test
+activity does this support?
+- a) Test analysis
+- b) Test design and test implementation
+- c) Test monitoring and test control
+- d) Test completion reporting
+
+**11.** Which is a test analysis task supported by GenAI?
+- a) Generating automated test scripts from structured test cases
+- b) Prioritizing test conditions based on risk likelihood and impact
+- c) Automatically adjusting scripts for changed UI locators
+- d) Creating dashboards of test progress
+
+**12.** Which metric evaluates whether generated output is applicable and appropriate for the given
+situation?
+- a) Diversity
+- b) Relevance and Contextual Fit
+- c) Recall
+- d) Accuracy
+
+**13.** Which metric would you use to check that generated test cases are not repetitive and explore
+edge cases?
+- a) Precision
+- b) Diversity
+- c) Execution Success Rate
+- d) Time Efficiency
+
+**14.** A tester runs a prompt once, gets an excellent result, and concludes the prompt is reliable.
+What is wrong with this?
+- a) Nothing — a single successful result is sufficient evidence
+- b) LLM output is non-deterministic, so metrics must be based on statistically relevant data
+- c) Metrics can only be applied to automated tests
+- d) Accuracy cannot be evaluated without fine-tuning
+
+**15.** Which is a recognised technique for iteratively refining prompts?
+- a) Increasing the temperature until output varies
+- b) A/B testing of prompt versions against predefined metrics
+- c) Removing all constraints to avoid limiting the model
+- d) Always making the prompt as long as possible
+
+**16.** Why does the syllabus recommend sharing prompt practices across a test team?
+- a) It reduces the energy consumption of the model
+- b) It standardizes prompt techniques and maintains consistent quality
+- c) It removes the need to verify generated output
+- d) It allows the team to bypass quality gates
+
+<details><summary>Answers and explanations</summary>
+
+| Q | Ans | Why |
+|---|---|---|
+| 1 | **b** | The six are Role, Context, Instruction, Input data, Constraints, Output format. Temperature and token limits are model settings, not prompt components. |
+| 2 | **b** | Constraints "help to specify how instructions should be applied to input data". (a) is Context, (c) is Role, (d) is Input data. |
+| 3 | **b** | One example = one-shot. None = zero-shot. More than one = few-shot. |
+| 4 | **c** | Meta prompting leverages the model's ability to generate or refine its own prompts, in an iterative cycle with the tester. (a) is chaining, (b) is few-shot, (d) is a system prompt. |
+| 5 | **b** | The LLM generates responses by considering the unchanging system prompt and the current user prompt together. |
+| 6 | **b** | Few-shot is recommended for repetitive tasks with a specific or constrained output format. |
+| 7 | **b** | Prompt chaining is for complex tasks requiring precision with human verification at each step. |
+| 8 | **a** | Meta prompting suits flexible, dynamic tasks and is explicitly recommended for crafting prompts for new tasks — including when the tester is unsure how to write one. |
+| 9 | **b** | Impact analysis and test optimization: analysing code changes to identify high-risk areas, enabling targeted regression testing. |
+| 10 | **b** | Test data synthesis sits within test design and test implementation — privacy-preserving synthetic data resembling production data. |
+| 11 | **b** | Prioritizing test conditions by risk is a test analysis task. (a) is test implementation, (c) is regression testing, (d) is test monitoring. |
+| 12 | **b** | Relevance and Contextual Fit — whether output is applicable and appropriate for a given context. |
+| 13 | **b** | Diversity — covering a wide range of inputs and scenarios, avoiding repetition, exploring edge cases. |
+| 14 | **b** | Given the non-deterministic nature of GenAI, metrics must be based on statistically relevant data. One run is not evidence. |
+| 15 | **b** | A/B testing creates multiple prompt versions and evaluates which performs better against predefined metrics. (d) is wrong — shorter prompts sometimes generalize better. |
+| 16 | **b** | Sharing standardizes prompt techniques, maintains consistent quality, and builds a culture of iterative improvement — e.g. through shared prompt libraries. |
+
+</details>

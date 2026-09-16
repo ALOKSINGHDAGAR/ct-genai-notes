@@ -284,3 +284,102 @@ That phrase — **hybrid teams of people and AI** — is very quotable and likel
 14. **AI-based test strategy, AI-based risk management, monitoring and control of AI-based test
     processes.**
 </details>
+
+---
+
+# Practice questions — Chapter 5
+
+*Twelve questions. The real exam asks **7** from this chapter — **4 recall** and 3 understanding,
+all worth 1 point. The recall ones are the cheapest marks in the exam, so get these right.*
+
+**1.** Shadow AI is best defined as:
+- a) Using AI tools that run locally rather than in the cloud
+- b) Using GenAI tools or systems within an organization without formal approval or oversight
+- c) Using an LLM whose training data is undisclosed
+- d) Using AI agents that operate without logging
+
+**2.** Which is **not** one of the three risks of shadow AI?
+- a) Information security and data privacy weaknesses
+- b) Compliance and regulatory issues
+- c) Vague intellectual property
+- d) Reduced model accuracy
+
+**3.** How does the syllabus say an organisation should address shadow AI?
+- a) By prohibiting all GenAI tools
+- b) Through a strategy and steps for integrating and deploying GenAI
+- c) By restricting GenAI use to the test management team
+- d) By fine-tuning an approved in-house model
+
+**4.** What should a GenAI test strategy define first?
+- a) The vector database technology
+- b) Measurable test objectives, such as increased productivity or shorter test cycles
+- c) The fine-tuning dataset
+- d) The number of agents to deploy
+
+**5.** Which three areas must GenAI process guidelines cover?
+- a) Model size, licensing and hosting region
+- b) Rules for sensitive data, transparency obligations, and quality gates with review of generated testware
+- c) Temperature, seed value and context window
+- d) Recruitment, training budget and tooling spend
+
+**6.** Which is one of the four criteria for selecting an LLM/SLM for test tasks?
+- a) The number of parameters
+- b) Community and support, including documentation
+- c) The country where the model was trained
+- d) The size of the vendor's customer base
+
+**7.** Why does the syllabus caution against relying on published LLM benchmarks?
+- a) Benchmarks are usually out of date
+- b) Only a few benchmarks focus specifically on software test tasks
+- c) Benchmarks are proprietary and cannot be cited
+- d) Benchmarks only measure energy consumption
+
+**8.** Which sequence gives the three phases of adopting GenAI in a test organization?
+- a) Pilot, rollout, optimization
+- b) Discovery; initiation and usage definition; utilization and iteration
+- c) Awareness, adoption, automation
+- d) Planning, monitoring, completion
+
+**9.** During which phase would a team be trained on GenAI concepts, given access to models, and
+allowed to experiment with initial use cases?
+- a) Discovery
+- b) Initiation and usage definition
+- c) Utilization and iteration
+- d) Test completion
+
+**10.** Which statement about the adoption phases is correct?
+- a) Each phase must be completed organization-wide before the next begins
+- b) They can run in parallel for different use cases
+- c) They apply only to test automation
+- d) They must be repeated for every release
+
+**11.** A prompt pattern is:
+- a) A recurring error observed in LLM responses
+- b) A reusable template for crafting effective prompts to guide GenAI toward consistent and reliable outputs
+- c) The prescribed order of the six prompt components
+- d) A vendor-specific prompt syntax
+
+**12.** How does the syllabus describe the evolving role of the test manager?
+- a) They stop managing people and manage only AI tools
+- b) They lead human testers and also coordinate GenAI-powered test agents, requiring new skills for hybrid teams
+- c) They become responsible for fine-tuning the organisation's models
+- d) They approve every individual LLM response before use
+
+<details><summary>Answers and explanations</summary>
+
+| Q | Ans | Why |
+|---|---|---|
+| 1 | **b** | The glossary definition — without formal approval or oversight. |
+| 2 | **d** | The three risks are security/privacy weaknesses, compliance and regulatory issues, and vague intellectual property. Model accuracy is not among them. |
+| 3 | **b** | A strategy and steps for integrating and deploying GenAI helps avoid shadow AI. Prohibition is not the syllabus's answer. |
+| 4 | **b** | The strategy begins by defining measurable test objectives — increasing productivity, shortening cycles, improving quality. |
+| 5 | **b** | These are the three named items: sensitive data rules, transparency about what was AI-generated, and quality gates with review. |
+| 6 | **b** | The four are model performance, fine-tuning potential, recurring cost, and community and support. Parameter count is not one. |
+| 7 | **b** | Many benchmarks exist for NLP, code generation and image analysis, but only a few target software test tasks — so evaluate against the organisation's own benchmarks. |
+| 8 | **b** | Discovery; Initiation and usage definition; Utilization and iteration. |
+| 9 | **a** | Discovery focuses on awareness and capability building — training, access, and experimentation to build confidence. |
+| 10 | **b** | The phases can run in parallel for different use cases; the syllabus gives test report analysis being ahead of test automation as its example. |
+| 11 | **b** | A reusable template for crafting effective prompts, producing consistent and reliable outputs. |
+| 12 | **b** | Test managers will not only lead human testers but also coordinate GenAI-powered test agents, needing new skills for overseeing hybrid teams of people and GenAI tools. |
+
+</details>

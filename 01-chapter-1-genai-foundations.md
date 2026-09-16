@@ -327,3 +327,102 @@ Which is exactly what Chapter 2 teaches, and Chapter 2 is worth more than double
 10. **The chatbot** — it gives quick, conversational access to testing knowledge and is easy enough
     for anyone to use.
 </details>
+
+---
+
+# Practice questions — Chapter 1
+
+*Twelve multiple-choice questions in exam style. The real exam asks **7** from this chapter,
+all worth 1 point each.*
+
+**1.** Which type of AI represents knowledge using symbols and logical rules?
+- a) Classical machine learning
+- b) Symbolic AI
+- c) Deep learning
+- d) Generative AI
+
+**2.** What is the main advantage of GenAI for software testing?
+- a) It produces output that never needs checking
+- b) It uses pre-trained models that can be applied directly, with no additional training phase
+- c) It removes the need for test techniques
+- d) It guarantees complete requirements coverage
+
+**3.** Which statement about tokens is correct?
+- a) One token always equals one word
+- b) A token can be a character, a sub-word or a word
+- c) Tokens are only used for image data
+- d) Tokens are the numerical vectors the model processes
+
+**4.** What do embeddings capture?
+- a) The file size of the input document
+- b) The semantic, syntactic and contextual relationships of tokens
+- c) The number of tokens in the context window
+- d) The temperature setting used at inference
+
+**5.** Two tokens with similar meanings will have embeddings that are:
+- a) Identical
+- b) Positioned close together in a high-dimensional space
+- c) Stored in the same relational database row
+- d) Assigned the same token ID
+
+**6.** Which statement best reflects how the transformer generates text?
+- a) It retrieves the closest matching answer from a stored knowledge base
+- b) It predicts the next token, producing text that is statistically plausible but not necessarily correct
+- c) It applies logical rules to derive a provably correct answer
+- d) It searches the internet and summarises the results
+
+**7.** An SLM differs from an LLM primarily because it:
+- a) Cannot process natural language
+- b) Has fewer parameters and is designed to be lightweight and focused
+- c) Is always more accurate than an LLM
+- d) Does not use the transformer architecture
+
+**8.** Which LLM type is described as emphasising chain-of-thought and multi-step problem solving?
+- a) Foundation LLM
+- b) Instruction-tuned LLM
+- c) Reasoning LLM
+- d) Base LLM
+
+**9.** An instruction-tuned LLM is created by:
+- a) Training a foundation model further on datasets pairing prompts with expected responses
+- b) Reducing the parameter count of a reasoning model
+- c) Training from scratch on instruction data only
+- d) Applying retrieval-augmented generation to a base model
+
+**10.** Which is a correct application of a multimodal LLM in software testing?
+- a) Reducing the energy consumption of test execution
+- b) Identifying discrepancies between expected results and the actual visual elements on a screenshot
+- c) Guaranteeing that generated test scripts compile
+- d) Eliminating the need for a test oracle
+
+**11.** Which of these is one of the seven key LLM capabilities for test tasks?
+- a) Automatically signing off the test completion report
+- b) Test data generation, including setting boundary values
+- c) Replacing the risk analysis performed by the test manager
+- d) Certifying compliance with the EU AI Act
+
+**12.** A non-technical business analyst wants to explore possible test scenarios for a new feature
+by asking questions in plain language. Which is most appropriate?
+- a) An LLM-powered testing application integrated via API
+- b) An AI chatbot
+- c) A fine-tuned small language model
+- d) A multi-agent orchestration framework
+
+<details><summary>Answers and explanations</summary>
+
+| Q | Ans | Why |
+|---|---|---|
+| 1 | **b** | Symbolic AI is the rule-based approach that represents knowledge using symbols and logical rules. |
+| 2 | **b** | The syllabus names this as the key advantage — pre-trained models usable directly without an additional training phase. It adds immediately that this comes with risks, so (a) and (d) are wrong. |
+| 3 | **b** | A token can be as small as a character or as large as a sub-word or word. Option (d) describes embeddings, not tokens. |
+| 4 | **b** | Embeddings encode semantic, syntactic and contextual relationships in numerical form. |
+| 5 | **b** | Tokens with similar meanings or contextual roles sit close together in the high-dimensional space. Close, not identical. |
+| 6 | **b** | It predicts the next token. "Plausible is not necessarily correct" is the defining caution of the whole syllabus. |
+| 7 | **b** | An SLM is a compact model with fewer parameters, designed for lightweight and focused solutions. It is not automatically less accurate — Chapter 4 shows fine-tuned SLMs performing strongly. |
+| 8 | **c** | Reasoning LLMs emphasise logical inference, multi-step problem-solving and chain-of-thought. |
+| 9 | **a** | Instruction-tuned models are derived from foundation models and fine-tuned on prompt/expected-response pairs. |
+| 10 | **b** | This is one of the two benefits the syllabus names, along with generating richer test cases from text plus visual cues. |
+| 11 | **b** | Test data generation — datasets, boundary values, combinations — is one of the seven. The others all breach the human-responsibility principle. |
+| 12 | **b** | Chatbots have an intuitive conversational interface accessible even to non-technical stakeholders, and suit dynamic exploration of requirements and potential test cases. |
+
+</details>

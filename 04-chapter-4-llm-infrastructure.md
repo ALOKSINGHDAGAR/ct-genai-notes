@@ -281,3 +281,90 @@ And you can layer **RAG and fine-tuning** on top of any of them.
 12. **(1)** An AI chatbot; **(2)** a test tool with GenAI built in; **(3)** building your own.
 13. **No** — they're **not mutually exclusive** and can run at the same time.
 </details>
+
+---
+
+# Practice questions — Chapter 4
+
+*Ten questions. The real exam asks **5** from this chapter — one per learning objective,
+all worth 1 point, all understanding level. No recall, no scenarios.*
+
+**1.** Which component of an LLM-powered test infrastructure handles authentication, data retrieval
+and prompt preparation?
+- a) The front end
+- b) The back end
+- c) The LLM
+- d) The vector database
+
+**2.** Why does the syllabus say this architecture goes beyond a traditional client-server model?
+- a) Because it uses HTTPS rather than HTTP
+- b) Because the LLM is a smart processing component that interprets and reasons based on testware
+- c) Because the front end is written as a single-page application
+- d) Because it requires an on-premises deployment
+
+**3.** In RAG preprocessing, why are documents split into chunks of roughly 256–512 tokens?
+- a) To reduce the cost of the vector database licence
+- b) To ensure focused retrieval and compatibility with the model's context window
+- c) Because embeddings cannot exceed 512 dimensions
+- d) To prevent hallucinations entirely
+
+**4.** How does a RAG system select which stored chunks to use?
+- a) By exact keyword match against the prompt
+- b) By semantic similarity between the embeddings of the prompt and those of the chunks
+- c) By the most recently added chunks
+- d) By the chunk with the highest token count
+
+**5.** What primarily separates fine-tuning from RAG?
+- a) Fine-tuning updates the model's weights; RAG does not
+- b) RAG requires labelled training data; fine-tuning does not
+- c) Fine-tuning works only with small language models
+- d) RAG can only be used with multimodal models
+
+**6.** An agent operating with periodic human oversight to ensure output meets user-defined goals is:
+- a) Autonomous
+- b) Semi-autonomous
+- c) A rule-based chatbot
+- d) A vision-language model
+
+**7.** What is the recommended approach for using LLM-powered agents on critical test tasks?
+- a) Use fully autonomous agents to remove human error
+- b) Use semi-autonomous agents, and implement automated verification of results
+- c) Avoid agents and use a foundation LLM directly
+- d) Raise the temperature to encourage more thorough answers
+
+**8.** A model performs excellently on its fine-tuning dataset but poorly on new, unseen test cases.
+This is:
+- a) Opacity
+- b) Overfitting
+- c) Data poisoning
+- d) Non-determinism
+
+**9.** Which fine-tuning challenge makes debugging and validation harder?
+- a) Overfitting
+- b) Opacity — lack of transparency in how the model produces its outputs
+- c) Computational cost
+- d) Biased training data
+
+**10.** An organisation uses a commercial AI chatbot for exploratory work while also building its own
+GenAI test tool for regression analysis. This is:
+- a) Not permitted — one LLMOps approach must be selected
+- b) Acceptable — the three approaches are not mutually exclusive and may run simultaneously
+- c) Only possible if both use the same underlying model
+- d) Only possible after fine-tuning the commercial model
+
+<details><summary>Answers and explanations</summary>
+
+| Q | Ans | Why |
+|---|---|---|
+| 1 | **b** | The back end processes user input and manages authentication, data retrieval, prompt preparation and interaction with the LLM. |
+| 2 | **b** | The syllabus gives four reasons; this is the first. The others: dynamic generation from context rather than scripted responses, multiple integrated data sources, and post-processing of the LLM's raw output. |
+| 3 | **b** | Both reasons matter — focused retrieval **and** compatibility with the context window. |
+| 4 | **b** | Retrieval is based on semantic similarity between embeddings, not keyword matching. |
+| 5 | **a** | Fine-tuning is supervised learning on labelled examples that updates LLM weights. RAG retrieves external data at runtime and leaves the model unchanged. |
+| 6 | **b** | Semi-autonomous agents perform tasks with periodic human oversight. |
+| 7 | **b** | The syllabus names both mitigations: automated verification procedures for agent results, and semi-autonomous agents for critical tasks. |
+| 8 | **b** | Overfitting — the model becomes too specialized to the training data, harming performance on new, unseen data. |
+| 9 | **b** | Opacity is defined as lack of transparency in how an LLM makes decisions or produces outputs, which complicates debugging and validation. |
+| 10 | **b** | The approaches are not mutually exclusive and may be implemented simultaneously depending on the test activities involved. |
+
+</details>

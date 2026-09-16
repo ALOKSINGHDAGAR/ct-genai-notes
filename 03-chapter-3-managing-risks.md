@@ -390,3 +390,122 @@ examinable.** Only what's summarised in that table. So don't go reading ISO 4200
 13. **Retrieval-Augmented Generation (RAG)** and **fine-tuning**.
 14. **Senior Security Engineers, Legal counsel, the CTO, or the CISO.**
 </details>
+
+---
+
+# Practice questions — Chapter 3
+
+*Fourteen questions. The real exam asks **10** from this chapter — 3 recall, 6 understanding,
+and **1 worth 2 points** (marked **[SCENARIO]**).*
+
+**1.** Which definition matches a hallucination?
+- a) Output that favours certain assumptions because of the training data
+- b) Wrong information created by an LLM
+- c) Variation in output caused by probabilistic sampling
+- d) Misinterpretation of conditional logic
+
+**2.** A test manager asks an LLM to estimate test effort across several interdependent workstreams.
+The answer looks confident but the arithmetic does not follow from the inputs. This is:
+- a) A hallucination
+- b) A reasoning error
+- c) Bias
+- d) Context manipulation
+
+**3.** Why can these defects reappear even after they seem fixed?
+- a) The training data is continuously updated
+- b) LLMs are non-deterministic, so a problem resolved in one output can recur in another conversation
+- c) Temperature resets to its default after each prompt
+- d) The context window is cleared between sessions
+
+**4. [SCENARIO]** An LLM generates a set of test cases that reference a "premium account" tier. The
+tester checks the user story and the specification, and finds no such tier exists. Which detection
+method has the tester used, and what has been found?
+- a) Logical validation; a reasoning error
+- b) Cross-verification; a hallucination
+- c) Output testing; a bias
+- d) Consistency checking; non-determinism
+
+**5.** Which detection method involves running generated test cases against the test object to check
+the results?
+- a) Cross-verification
+- b) Domain expertise consultation
+- c) Output testing
+- d) Consistency checks
+
+**6.** Which is a recognised mitigation for hallucinations, reasoning errors and biases?
+- a) Increasing the temperature to encourage diverse answers
+- b) Evaluating the prompt with several LLMs and comparing outputs
+- c) Removing constraints from the prompt
+- d) Using only foundation LLMs
+
+**7.** What happens when temperature is lowered?
+- a) The model becomes factually more accurate
+- b) Randomness is reduced, giving more consistent output, at the cost of creativity and diversity
+- c) The context window expands
+- d) Hallucinations are eliminated
+
+**8.** Which statement about reproducibility is correct?
+- a) Setting a random seed guarantees identical output in all implementations
+- b) Complete reproducibility cannot be guaranteed, but variability can be reduced
+- c) Reproducibility improves as output length increases
+- d) Reproducibility is unaffected by hyperparameters
+
+**9.** An attacker submits images crafted to lure the model into the wrong context, causing it to
+hallucinate about acceptance criteria. This attack vector is:
+- a) Context manipulation
+- b) Request manipulation
+- c) Data poisoning
+- d) Malicious code generation
+
+**10.** Providing deliberately fake evaluations when rating an AI-generated test report is an example
+of:
+- a) Data poisoning
+- b) Context manipulation
+- c) Malicious code generation
+- d) Request manipulation
+
+**11.** Which is a core data privacy measure recommended by the syllabus?
+- a) Sharing all test data with the model to improve accuracy
+- b) Data minimization — using only the necessary amount of non-sensitive data
+- c) Disabling access controls to speed up retrieval
+- d) Storing prompts in plain text for auditability
+
+**12.** An organisation handling highly confidential data wants maximum control over its LLM. Which
+option best fits?
+- a) A public free-tier chatbot
+- b) Installing the LLM in the organisation's own infrastructure
+- c) Any commercial cloud provider
+- d) Fine-tuning a public model
+
+**13.** Which factors most influence the energy consumption of a GenAI task?
+- a) The number of users registered on the platform
+- b) The complexity of the task and the computational resources required
+- c) The licensing model of the LLM
+- d) The size of the vector database
+
+**14.** ISO/IEC 42001:2023 is best described as:
+- a) A regulation classifying AI applications by risk level
+- b) A standard specifying requirements for managing AI systems within an organization
+- c) A US framework focused on fairness and bias
+- d) A standard for the AI lifecycle using machine learning
+
+<details><summary>Answers and explanations</summary>
+
+| Q | Ans | Why |
+|---|---|---|
+| 1 | **b** | The glossary definition is exactly this. (a) is bias, (c) is non-determinism, (d) is a reasoning error. |
+| 2 | **b** | Test planning and estimation require logical reasoning; LLMs pattern-match rather than reason, producing reasoning errors. Nothing was invented, so it is not a hallucination. |
+| 3 | **b** | Non-deterministic behaviour makes these defects hard to fix — they may look resolved in one output and reappear in another conversation with the same LLM. |
+| 4 | **b** | Comparing output against existing documentation and requirements is cross-verification; inventing a non-existent tier is a hallucination. |
+| 5 | **c** | Output testing — running the generated test cases or scripts against the test objects to verify results. |
+| 6 | **b** | Comparing results across models is one of the five mitigations. The others are: complete context, prompt chaining, clear data formats, and selecting an appropriate model. |
+| 7 | **b** | Lowering temperature narrows the probability distribution, reducing randomness — but limits creativity and diversity. It does not improve factual accuracy. |
+| 8 | **b** | The syllabus states complete reproducibility cannot be guaranteed, though strategies reduce variability. Long outputs increase variability, so (c) is reversed. |
+| 9 | **b** | Request manipulation — introducing data that disrupts the AI's output. The image example is the syllabus's own. |
+| 10 | **a** | Data poisoning — manipulating training data, illustrated by fake evaluations when rating AI-generated output. |
+| 11 | **b** | Data minimization is one of the four core measures, with anonymization/pseudonymization, secure storage and transmission, and resources training. |
+| 12 | **b** | Of the three secure environment options, installing the LLM in the organisation's own infrastructure gives the most control. |
+| 13 | **b** | The syllabus names task complexity and the computational resources required as the drivers. |
+| 14 | **b** | ISO/IEC 42001:2023 is a Standard for an AI management system. (a) is the EU AI Act, (c) is NIST AI RMF, (d) is ISO/IEC 23053:2022. |
+
+</details>
