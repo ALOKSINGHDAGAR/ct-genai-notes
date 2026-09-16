@@ -1,319 +1,392 @@
-# Chapter 3 — Managing Risks of Generative AI in Software Testing
+# Chapter 3 — When AI Gets It Wrong, and What To Do
 
-> ## ⭐ SECOND-HIGHEST VALUE CHAPTER
-> **Exam weight: 10 questions, 11 points (24%) — 3×K1, 6×K2, 1×K3**
-> Teaching time: 160 minutes.
-> The single K3 here is **GenAI-3.1.2 — identify hallucinations, reasoning errors and biases in
-> LLM output** (worth 2 points). The 3 K1s are cheap recall marks: **3.1.1, 3.1.4, 3.4.1**.
-
-## Learning objectives
-
-| LO | K | Objective |
-|---|---|---|
-| GenAI-3.1.1 | **K1** | **Recall** the definitions of hallucinations, reasoning errors and biases |
-| GenAI-3.1.2 | **K3** | **Identify** hallucinations, reasoning errors and biases in LLM output |
-| GenAI-3.1.3 | K2 | **Summarize** mitigation techniques for hallucinations, reasoning errors and biases |
-| GenAI-3.1.4 | **K1** | **Recall** mitigation techniques for **non-deterministic behavior** of LLMs |
-| GenAI-3.2.1 | K2 | **Explain** key data privacy and security risks |
-| GenAI-3.2.2 | K2 | **Give examples** of data privacy and vulnerabilities in using GenAI |
-| GenAI-3.2.3 | K2 | **Summarize** mitigation strategies for data privacy and security |
-| GenAI-3.3.1 | K2 | **Explain** the impact of task characteristics and model usage on energy consumption |
-| GenAI-3.4.1 | **K1** | **Recall** examples of AI regulations, standards and best practice frameworks |
-
-## Keywords
-
-**Testing terms:** security · vulnerability · data privacy
-**GenAI terms:** hallucination · temperature · reasoning error · bias · context manipulation
+**Worth 11 points out of 46 — second only to Chapter 2.**
+**Ten questions: three easy recall ones, six understanding ones, one 2-point scenario.**
 
 ---
 
-# STEP 1 — The three defect types (GenAI-3.1.1, K1 — guaranteed question)
+## What this chapter is really about
 
-These three are constantly confused. Learn the **cause** of each, because that is how they are
-distinguished.
+Chapter 1 told you the AI writes things that *sound* right. This chapter is about what happens when
+"sounds right" and "is right" come apart — and what you do about it.
 
-| Defect | Definition | Cause | Manifestation in software testing |
+It covers four separate worries:
+
+1. The AI makes things up, reasons badly, or leans one way
+2. Your confidential data leaks
+3. It burns a surprising amount of electricity
+4. There are laws and standards you need to know about
+
+Three of those 11 points come from **pure recall** questions, so there are easy marks here.
+
+---
+
+## Part 1 — The three ways AI output goes wrong
+
+These three get confused constantly. The trick is to learn **the cause of each**, because that's
+what separates them.
+
+### Hallucination — it made something up
+
+The AI produces something **factually wrong or completely irrelevant**. The official glossary
+definition is blunt: **"Wrong information created by an LLM."**
+
+**What it looks like in testing:**
+- Test cases for features that don't exist
+- Scripts that don't work
+- Test cases checking **acceptance criteria that were never in the user story**
+
+**Why it happens:** remember Chapter 1 — the model generates *statistically plausible* text. It has
+no fact-checker inside it.
+
+**One word: INVENTED.**
+
+### Reasoning error — the logic doesn't hold up
+
+The AI **misreads logical structure** — cause and effect, if-then conditions, step-by-step working —
+and reaches a wrong conclusion.
+
+**Why it happens — and this is the exam answer:**
+
+> LLMs **lack true logical reasoning and rely on pattern matching.**
+
+It isn't thinking through your problem. It's recognising that your problem *looks like* problems
+it has seen, and producing something shaped like the answers to those.
+
+**Where it shows up in testing:** **test planning** and **test case prioritisation** — jobs that
+genuinely need logic. Also anything mathematical.
+
+**One word: ILLOGICAL.**
+
+### Bias — it leans one way
+
+The output consistently **favours certain information, approaches or assumptions**.
+
+**Why it happens:** it comes **from the training data**. Not from your prompt. Not from randomness.
+From what the model was fed while learning.
+
+The syllabus example: models trained mostly on English text **under-represent non-English
+perspectives**.
+
+**Where it shows up in testing:** generating test data, or refining acceptance criteria.
+
+**One word: SKEWED.**
+
+### Two sentences worth memorising
+
+> These problems come from **the nature of the training data** and **the inherent limits of the
+> transformer model**.
+
+> Because the AI is **non-deterministic**, these are hard to fix — **a problem can look fixed in one
+> conversation and come back in the next.**
+
+That second one matters. **You can't "fix" a hallucination the way you fix a code defect.** It isn't
+a bug sitting in a line of code — it's a property of how the thing works.
+
+---
+
+## Part 2 — Spotting them (this is the 2-point question)
+
+You'll get a scenario and have to say what went wrong and how you'd catch it. The methods are
+**grouped by problem type** — learn the grouping.
+
+All of these work through **review**, or **review combined with automated checking**.
+
+### Catching hallucinations — three methods
+
+- **Cross-verification** — compare the output against **documentation, requirements and known system
+  behaviour**. Tools can help by flagging mismatches against trusted sources.
+- **Domain expertise consultation** — get a **subject matter expert** to check it. They catch the
+  subtle things tools miss.
+- **Consistency checks** — is the output consistent with itself, and with what you already know?
+
+### Catching reasoning errors — two methods
+
+- **Logical validation** — read through the reasoning and check it holds together. Tools help, but
+  **complicated cases need a human.**
+- **Output testing** — **just run it.** Execute the generated test cases or scripts against the
+  actual system and see what happens. Can be automated.
+
+### Catching bias — two approaches
+
+- Check whether the generated testware **fairly reflects your test strategy and coverage
+  requirements**
+- Look for **whole test types going missing** — the syllabus example is
+  **non-functional tests being under-represented**
+
+### How much of this should you do?
+
+> It **depends on the risk level** of the task you're using AI for.
+
+Low-risk task, light checking. High-risk task, heavy checking. Sensible, and examinable.
+
+### The decision table for the scenario question
+
+| What the scenario describes | What it is | How you catch it |
+|---|---|---|
+| A test case mentions a field or requirement **that doesn't exist** | **Hallucination** | **Cross-verification** against the test basis |
+| A prioritisation or estimate where **the logic doesn't add up** | **Reasoning error** | **Logical validation** or **output testing** |
+| Generated tests **consistently skip a whole category** (e.g. non-functional) | **Bias** | **Review against the test strategy and coverage requirements** |
+
+---
+
+## Part 3 — Reducing the problem
+
+First, *when* do these problems get worse? The syllabus says: when **prompts are poorly designed**,
+or when you **haven't given it enough context**.
+
+Which means the fix loops straight back to Chapter 2.
+
+**Five mitigation techniques:**
+
+1. **Give it complete context** — put all the relevant information in the prompt (those six components)
+2. **Break the prompt into smaller pieces** — use **prompt chaining** and check each step.
+   **This catches reasoning errors early**
+3. **Use clear, unambiguous data formats** — don't make it guess what your input means
+4. **Pick the right model for the job** — one suited to that kind of task
+5. **Compare across models** — run the same prompt through **several LLMs and compare** the answers
+
+> **Worth knowing for a link question:** the syllabus points forward to **two more techniques in
+> Chapter 4** — **Retrieval-Augmented Generation (RAG)** and **fine-tuning**.
+
+---
+
+## Part 4 — Getting consistent answers (easy recall marks)
+
+Start with the honest bit:
+
+> **Complete reproducibility cannot be guaranteed.**
+
+You can reduce the variation, not eliminate it. And it gets worse with **long outputs**.
+
+**Two ways to reduce it:**
+
+### Lower the temperature
+
+**Temperature** is a setting that **controls how random or creative** the output is.
+
+Turn it down and the model **narrows its range of choices**, picking the safe, likely option more
+often. Output becomes more consistent.
+
+**But there's a cost**, and the exam tests it: it **limits creativity and diversity**, making
+output **repetitive or overly deterministic**.
+
+> ⚠️ Low temperature makes answers **more consistent. It does not make them more correct.** It does
+> not stop hallucinations. Consistently wrong is still wrong.
+
+### Set a random seed
+
+Some systems let you fix the **seed** for the random number generator, so the same "random"
+sequence gets used each time. That improves reproducibility — though it's **pseudo-random**, and not
+every implementation offers it.
+
+Also worth noting: **automating parts of your output checking** gives you a structured, consistent
+way to evaluate, which helps manage the variability.
+
+---
+
+## Part 5 — Privacy and security risks
+
+When you paste things into an AI tool, where does that information go?
+
+### Three privacy worries
+
+- **Unintentional data exposure** — the model might **accidentally reveal sensitive information** in
+  its output
+- **No control over how your data is used** — the tool might **store and process your data without
+  your consent**
+- **Compliance risk** — using AI carelessly can breach regulations like **GDPR**
+  (Regulation (EU) 2016/679) and land you in **legal trouble**
+
+### Three security worries
+
+- Your **AI test infrastructure can be attacked** — breaches, unauthorised access
+- **Attackers can exploit the LLM itself** to change its behaviour or **pull out sensitive
+  information**
+- **Attackers can feed in malicious data** to mislead the model and damage its accuracy
+
+---
+
+## Part 6 — Four ways people attack AI systems
+
+Learn what makes each one different. The distinctions are the exam question.
+
+### Context manipulation
+
+**Sending requests designed to extract confidential training data.**
+
+The syllabus example: **flood the model with extremely long prompts to overload its context window**,
+and it may start **spitting out random fragments of its training data** — possibly including
+sensitive material.
+
+*Note: **context manipulation is a listed keyword**, so the definition itself is examinable.*
+
+### Request manipulation
+
+**Feeding in data that disrupts the output.**
+
+The example: **images that trick the AI into the wrong context**, making it hallucinate about things
+like acceptance criteria.
+
+### Data poisoning
+
+**Corrupting the training data.**
+
+The example: **deliberately giving fake ratings** when scoring an AI-generated test report, so the
+model learns the wrong lesson.
+
+### Malicious code generation
+
+**Manipulating the AI into writing backdoors.**
+
+The example: getting it to generate code that **opens a channel to a specific malicious IP address**.
+
+### The quick discriminators
+
+- **Context manipulation** → overload the context window to **get training data out**
+- **Request manipulation** → corrupt the **input** to wreck the **output**
+- **Data poisoning** → corrupt the **training data**
+- **Malicious code generation** → the **output itself** is the weapon
+
+---
+
+## Part 7 — Protecting yourself
+
+### First, a correction people get wrong
+
+> GDPR **does not explicitly prohibit** using GenAI. It **provides safeguards** that limit what you
+> can do — particularly around **lawfulness, and the purposes of collecting, processing and storing
+> data**.
+
+⚠️ An exam option saying "GDPR bans GenAI in testing" is **wrong**.
+
+### Four core privacy measures
+
+- **Data minimisation** — **don't process sensitive data unless you're legally allowed to**, and use
+  only as much non-sensitive data as you need
+- **Anonymisation and pseudonymisation** — **mask or replace** identifying information
+- **Secure storage and transmission** — **encryption and access controls**
+- **Training and policies** — teach people to use these tools responsibly and ethically
+
+### Five more mitigations
+
+- **Review the output systematically** — **"human evaluation is essential"**, in the syllabus's own
+  words
+- **Compare against another LLM** — run it through a second model and see if they agree
+- **Choose a secure environment** — three options depending on how confidential your work is:
+  1. A **commercial secure offering** from an LLM provider
+  2. Running the LLM in a **secure cloud**
+  3. **Installing it on your own infrastructure** (most control)
+- **Regular security audits and vulnerability assessments**
+- **Keep up with security best practice**
+
+> Two closing points: these are **complementary — you need a combination**, not one of them. And you
+> should **involve senior Security Engineers, Legal counsel, the CTO or the CISO** if your
+> organisation has them.
+
+---
+
+## Part 8 — The environmental cost
+
+Training and running these models takes **serious computing power**, and that means electricity and
+CO₂.
+
+**What drives the consumption:** **how complex the task is**, and **how much computing it needs**.
+
+**The comparison to remember** — this is almost certainly your exam question:
+
+> Generating **one image** with a powerful model can use **about as much energy as fully charging a
+> smartphone**.
+> Generating **text** uses only **a small percentage** of a phone charge.
+
+**Images cost far more than text.**
+
+Two other points:
+- **Accurate figures are hard to come by** — the syllabus admits this
+- One request is negligible, but **millions of users add up to substantial environmental strain**
+
+**What to do:** **limit unnecessary interactions with the model.** Don't fire off ten prompts where
+one careful one would do.
+
+---
+
+## Part 9 — Laws, standards and frameworks (easy recall marks)
+
+Four items. **The most common question is about which type each one is** — so learn the type column
+first.
+
+| Name | Type | What it does | For testing |
 |---|---|---|---|
-| **Hallucination** | Output that appears **factually incorrect or irrelevant** to a given task. *(Glossary: "Wrong information created by an LLM.")* | The model generates **statistically plausible** text, not verified fact | **Fictitious or irrelevant test cases**; **incorrect or non-functioning test scripts**; test cases that **verify non-existent acceptance criteria** |
-| **Reasoning error** | **Misinterpreting logical structures** — cause-and-effect, conditional logic, or step-by-step problem-solving — leading to incorrect conclusions | **LLMs lack true logical reasoning and rely on pattern matching** | **Test planning** and **test case prioritization** (tasks requiring logical reasoning); **mathematical reasoning** |
-| **Bias** | Output that **favours certain types of information, approaches, or assumptions** | **Originates from the data on which the model was trained** | Generating **test data** or **refining acceptance criteria**; e.g. models trained mostly on English data **underrepresent non-English perspectives** |
+| **ISO/IEC 42001:2023** | **Standard** | How to **manage AI systems in an organisation** | Keeps GenAI testing consistent and reliable |
+| **ISO/IEC 23053:2022** | **Standard** | A framework for the **AI lifecycle using ML**, focused on **safety and transparency** | Covers data quality, transparency, safety |
+| **EU AI Act** | **Regulation** | Legal framework that **sorts AI applications by risk level** | Requires **transparency, accountability, bias mitigation** |
+| **NIST AI Risk Management Framework** | **Framework** | US guidance on AI risk, focused on **fairness, transparency, security** | Helps prevent biased test results |
 
-### 🧠 The one-word discriminator
-- **Hallucination → INVENTED** (something that is not there / not true)
-- **Reasoning error → ILLOGICAL** (the steps or the logic are wrong)
-- **Bias → SKEWED** (systematically leaning one way, because of training data)
+### The shortcuts
 
-### Two framing sentences
-> "These defects result from the **nature of their training data** and the **inherent limitations
-> of the transformer model**."
+- **Two ISO standards** — 42001 is about **managing**, 23053 is about the **lifecycle**
+- **The EU AI Act is the only law** — and the only one that **sorts by risk level**
+- **NIST is the American framework** — think fairness and bias
 
-> "The **non-deterministic behavior of LLMs makes it difficult to fix these types of defects**;
-> they may **appear to be fixed for one LLM output but reappear in another conversation** with
-> the same LLM."
-
-⚠️ That second sentence is a strong exam point: you **cannot "fix" a hallucination permanently**
-the way you fix a code defect.
+And remember from the syllabus introduction: **the standards documents themselves are not
+examinable.** Only what's summarised in that table. So don't go reading ISO 42001.
 
 ---
 
-# ⭐ STEP 2 — Detecting them in LLM output (GenAI-3.1.2, **K3 — 2 points**)
+## Traps to watch for
 
-This is a scenario question: you will be shown a situation and asked which detection approach
-applies. **The detection methods are grouped by defect type — learn the grouping.**
-
-> All of these are applied "through **review**, or a **combination of review and automated
-> verification**."
-
-## Hallucination detection (3 methods)
-| Method | What it is |
-|---|---|
-| **Cross-verification** | Compare AI output with **existing documentation, requirements, and known system behavior**. Automated tools can cross-reference against **established data sources to flag discrepancies** |
-| **Domain expertise consultation** | Engage **subject matter experts** to validate accuracy — essential for **nuanced insights automated systems might overlook** |
-| **Consistency checks** | Verify outputs are **consistent with each other and with known information**; automated systems flag inconsistencies |
-
-## Reasoning error detection (2 methods)
-| Method | What it is |
-|---|---|
-| **Logical validation** | Evaluate the **logical flow** — consistency, coherence, structured reasoning — through **review cycles**. Automated tools can help, but **complex cases may require human judgment** |
-| **Output testing** | **Run the generated test cases or scripts against the test objects** and verify the results. Can be **partially or fully automated** |
-
-## Bias detection (2 approaches)
-| Approach | What it is |
-|---|---|
-| **Review representation of strategy/coverage** | Check whether generated testware (test code, synthetic test data) **fairly and accurately represents the defined test strategy and coverage requirements** |
-| **Assess bias related to test types** | E.g. **underrepresented non-functional tests** in the LLM output |
-
-> **Closing sentence:** "The actual implementation of these detection methods will **depend on the
-> estimated risk level** of hallucinations, reasoning errors or biases in the test task."
-
-### 🎯 K3 decision rule
-| The scenario shows… | It is a… | Detect by… |
-|---|---|---|
-| A test case referencing a requirement/field/button that does not exist | **Hallucination** | **Cross-verification** against the test basis |
-| A prioritization or estimation whose arithmetic/logic does not follow | **Reasoning error** | **Logical validation**, or **output testing** |
-| Generated test data covering only one demographic/language; no non-functional tests | **Bias** | **Review against the test strategy and coverage requirements** |
-
----
-
-# STEP 3 — Mitigating hallucinations, reasoning errors and biases (GenAI-3.1.3, K2)
-
-**When are these more likely?** "when prompts are **not properly designed**" or "when
-**relevant contextual input data is lacking** for a given test task." *(Note how this points
-straight back to Chapter 2.)*
-
-**5 mitigation techniques:**
-
-| # | Technique | Detail |
-|---|---|---|
-| 1 | **Provide complete context** | Ensure the prompt contains **all relevant information** (the 6 components) |
-| 2 | **Divide prompts into manageable segments** | Use **prompt chaining**, verifying each output before the next. **Helps detect reasoning errors early** |
-| 3 | **Use clear, interpretable data formats** | Avoid ambiguous formats; **structured, straightforward formats** help the model focus |
-| 4 | **Select the appropriate GenAI model for the task** | Use an LLM **specifically trained for the task at hand** (links to 5.1.3) |
-| 5 | **Compare results across models** | Evaluate the prompt with **several LLMs and compare outputs** to detect errors and select the most reliable result |
-
-> **Forward reference:** "Chapter 4 introduces **two complementary techniques** for improving LLM
-> results: **Retrieval-Augmented Generation and Fine-Tuning**." ⚠️ Know that these two are the
-> *Chapter 4* answers to this problem — a question may test that link.
-
----
-
-# STEP 4 — Mitigating non-determinism (GenAI-3.1.4, **K1** — easy mark)
-
-**Cause (from Ch.1):** probabilistic sampling processes used during inference.
-**Risk factor:** "particularly for **long outputs**, which increases the risk of variability."
-
-> ⚠️ **Start here:** "**complete reproducibility cannot be guaranteed**" — but certain strategies
-> reduce variability.
-
-| Strategy | How it works | Trade-off |
-|---|---|---|
-| **Adjusting the temperature parameter** | **Lowering temperature** during inference **narrows the probability distribution**, reducing randomness → **more consistent outputs** | **Limits creativity and diversity**, making outputs **more repetitive or overly deterministic** |
-| **Setting random seeds** | Some implementations allow a **seed value for the random number generator**, ensuring the same **pseudo-random** sequence → **improves reproducibility** | Only available in some implementations |
-
-**Definition to memorise:** **Temperature** = "A parameter that **controls the randomness or
-creativity** of an LLM's outputs."
-
-Also: reducing hallucination/reasoning-error risk involves addressing non-determinism, e.g. by
-**automating some aspects of output verification** to ensure a **structured and consistent
-evaluation process**.
-
-⚠️ **Traps:** (a) Low temperature does **not** improve accuracy or eliminate hallucinations — it
-reduces *variability*. (b) Temperature is **not** set in the system prompt; it is a model
-parameter. (c) Seeds give **pseudo-random** determinism, not guaranteed identical output in all
-implementations.
-
----
-
-# STEP 5 — Data privacy and security risks (GenAI-3.2.1, K2)
-
-## Three data privacy concerns
-| Concern | Detail |
-|---|---|
-| **Unintentional data exposure** | Models may **generate outputs that accidentally reveal sensitive information** |
-| **Lack of control over data usage** | Tools may **store and process sensitive data without explicit user consent or control** → misuse or unauthorized access |
-| **Compliance risks** | Using GenAI without complying with regulations such as **GDPR (Regulation (EU) 2016/679)** could lead to **legal disputes** |
-
-## Three specific security risks
-1. **LLM-powered test infrastructure can be vulnerable to security attacks** — data breaches,
-   unauthorized access.
-2. **Malicious actors can exploit vulnerabilities in LLMs** — manipulative attacks — to
-   **alter their behavior or extract sensitive information**.
-3. **Attackers can intentionally introduce malicious input data** to mislead LLMs and
-   **compromise their accuracy or security**.
-
----
-
-# STEP 6 — The four attack vectors (GenAI-3.2.2, K2 — learn the table)
-
-| Attack vector | Description | Syllabus example |
-|---|---|---|
-| **Context manipulation** | Sending requests designed to **extract confidential training data** | **Exceeding the LLM contextual window with long prompts** to overload the AI's memory, leading it to **reveal random snippets of its training data** |
-| **Request manipulation** | **Introducing data that disrupts the AI's output** | **Images that lure the AI into a different context**, provoking hallucinations on e.g. acceptance criteria |
-| **Data poisoning** | **Manipulating training data** | **Providing fake evaluations when rating** the results of an AI-generated test report |
-| **Malicious code generation** | Manipulating an LLM to **generate backdoors** (e.g. external command calls) during use | Generation of code to **open a communication channel with a specific, malicious IP** |
-
-### 🧠 Discriminators
-- **Context manipulation → overload the context window to EXTRACT training data**
-- **Request manipulation → corrupt the INPUT to disrupt the OUTPUT**
-- **Data poisoning → corrupt the TRAINING data**
-- **Malicious code generation → the OUTPUT itself is the weapon (backdoor)**
-
-⚠️ Note that **context manipulation is a listed keyword** for this chapter — so its definition is
-directly examinable at K1.
-
----
-
-# STEP 7 — Mitigation strategies (GenAI-3.2.3, K2)
-
-> Opening point: "Data protection regulations like GDPR **do not restrict the applications of
-> GenAI explicitly** but **do provide safeguards that may limit what can be done**, particularly
-> regarding **lawfulness and limitations on purposes of collection, processing, and storage**."
-> ⚠️ Trap: an option saying "GDPR prohibits the use of GenAI in testing" is **wrong**.
-
-## Core data privacy measures (4)
-| Measure | Detail |
-|---|---|
-| **Data minimization** | Avoid processing sensitive data unless legally permitted; use **only the necessary amount of non-sensitive data** |
-| **Data anonymization and pseudonymization** | **Masking or replacing sensitive information with non-identifiable data** |
-| **Secure data storage and transmission** | **Strong encryption and access controls** |
-| **Resources training** | Clear **training programs and policies** for responsible use, ethical practices, risk mitigation |
-
-## Additional mitigation strategies (5)
-| Strategy | Detail |
-|---|---|
-| **Systematic review of the generated output** | "**Human evaluation is essential** for ensuring quality and accuracy" |
-| **Evaluation by comparison with another LLM** | Use several LLMs on a task and **compare their responses** |
-| **Choice of a secure, operational environment** | Three options by confidentiality level: (1) **commercial secure offering from an LLM provider**, (2) **operate the LLM in a secure cloud**, (3) **install the LLM in the organization's own infrastructure** |
-| **Regular security audits and vulnerability assessments** | Identify and address weaknesses |
-| **Staying updated with security best practices** | Keep current with guidelines and technologies |
-
-> **Two closing points:** the strategies are **complementary — a combination is required**. And it
-> is **highly recommended to involve senior Security Engineers, Legal counsel, the CTO, or the
-> CISO** if present in the organization.
-
----
-
-# STEP 8 — Energy and environment (GenAI-3.3.1, K2)
-
-The LO is: explain the impact of **task characteristics and model usage** on energy consumption.
-
-| Point | Detail |
-|---|---|
-| **What drives consumption** | **The complexity of the task and the computational resources required** |
-| **Where the load falls** | LLMs are **web-based services**; use increases load on **devices, networks, and data centers** |
-| **The comparison to remember** | Generating **a single image** can consume **as much energy as fully charging a smartphone**; generating **text** consumes only **a small percentage of a smartphone's charge** |
-| **Scale effect** | A single task seems negligible, but the **cumulative effect across millions of users results in substantial environmental strain** → significant **CO₂ emissions** |
-| **Data quality caveat** | It is **hard to get accurate data** on the environmental impact of GenAI |
-| **Best practice** | **Limiting unnecessary model interactions** is critical to mitigating environmental risk |
-
-🧠 **Image ≫ text.** That contrast is the most likely question in this section.
-(Chapter 5.2.1 adds: **select right-sized models** and optimize usage patterns.)
-
----
-
-# STEP 9 — Regulations, standards and frameworks (GenAI-3.4.1, K1 — easy mark)
-
-**Four items. Learn the *type* of each — that is the most common question form.**
-
-| Name | **Type** | Description | Application in software testing |
-|---|---|---|---|
-| **ISO/IEC 42001:2023** — *Information technology — Artificial intelligence — Management system* | **Standard** | Specifies requirements for **managing AI systems within an organization** | Promotes that GenAI in testing **adheres to recommended practices**, promoting **consistency and reliability** |
-| **ISO/IEC 23053:2022** — *Framework for AI Systems Using Machine Learning* | **Standard** | Provides a framework for **AI lifecycle processes**, emphasizing **safety and transparency** | Framework for **data quality, transparency and safety** when using GenAI for testing |
-| **EU AI Act** | **Regulation** | Legal framework addressing AI risks, **classifying applications by risk level** | Mandates compliance in **transparency, accountability, and bias mitigation** |
-| **NIST AI Risk Management Framework (US)** | **Framework** | Guidelines for managing AI risks, focusing on **fairness, transparency, and security** | Supports **fairness** and **prevents biased test results** |
-
-### 🧠 Memory hooks
-- **42001 = "manage"** (management system — the 4 looks like a filing cabinet)
-- **23053 = "lifecycle + ML"**
-- **EU AI Act = the only REGULATION** (it is law) — and the only one that **classifies by risk level**
-- **NIST = the US FRAMEWORK** — fairness/bias
-
-> **Closing sentence:** test organizations must **stay updated** as AI technologies and regulatory
-> landscapes continue to evolve.
-
-⚠️ Remember from the syllabus introduction: **standards documents themselves are not examinable**
-— only what is summarised in the syllabus, i.e. exactly the table above.
-
----
-
-# ⚠️ Chapter 3 exam traps
-
-1. **Hallucination = invented; reasoning error = illogical; bias = skewed by training data.**
-2. **Bias comes from training data** — not from the prompt, not from temperature.
-3. **Reasoning errors happen because LLMs pattern-match instead of truly reasoning.**
-4. **You cannot permanently fix these defects** — non-determinism means they can reappear.
-5. **Complete reproducibility cannot be guaranteed.** Low temperature reduces *variability*,
-   not *error*, and it costs creativity/diversity.
-6. **GDPR does not ban GenAI** — it provides safeguards limiting lawfulness and purpose.
-7. **Context manipulation ≠ request manipulation.** Context manipulation *extracts training data*
-   by overloading the context window.
+1. **Hallucination = invented. Reasoning error = illogical. Bias = skewed by training data.**
+2. **Bias comes from training data** — not the prompt, not the temperature.
+3. **Reasoning errors happen because it pattern-matches instead of reasoning.**
+4. **You can't permanently fix these** — they can reappear in the next conversation.
+5. **Complete reproducibility is impossible.** Low temperature reduces *variation*, not *error*, and
+   costs you creativity.
+6. **GDPR doesn't ban GenAI.**
+7. **Context manipulation extracts training data. Request manipulation corrupts input.**
 8. **Data poisoning attacks the training data**, not the prompt.
-9. **EU AI Act is a Regulation; NIST AI RMF is a Framework; ISO/IEC items are Standards.**
-10. **Images cost far more energy than text.**
-11. **Human evaluation is essential** — mitigation is never fully automated.
-12. Mitigation strategies are **complementary; a combination is required.**
+9. **EU AI Act = Regulation. NIST = Framework. ISO/IEC = Standards.**
+10. **Images use far more energy than text.**
+11. **Human review is essential** — you never fully automate the checking.
+12. **You need a combination of mitigations**, not just one.
 
 ---
 
-# ✅ Chapter 3 self-check
+## Quick self-check
 
 1. Define hallucination, reasoning error and bias in one line each.
 2. Why do LLMs make reasoning errors?
-3. Where does LLM bias originate?
-4. Name the three hallucination detection methods.
-5. Name the two reasoning-error detection methods.
-6. What determines how thoroughly you implement detection methods?
-7. Name the two techniques for mitigating non-deterministic behaviour, and the cost of the first.
-8. What is the defining example of context manipulation?
-9. Which attack vector involves manipulating training data?
-10. Name the three secure operational environment options.
-11. Which single item in the regulations table is a Regulation? Which is a Framework?
-12. Which consumes more energy — generating an image or generating text?
-13. Which two Chapter 4 techniques are named as complementary ways to improve LLM results?
-14. Which roles should be involved for data privacy and security decisions?
+3. Where does bias come from?
+4. Name the three ways to detect a hallucination.
+5. Name the two ways to detect a reasoning error.
+6. What decides how thoroughly you check?
+7. Name the two ways to reduce non-determinism, and the cost of the first.
+8. What's the classic example of context manipulation?
+9. Which attack targets training data?
+10. Name the three secure environment options.
+11. Which of the four governance items is a Regulation? Which is a Framework?
+12. Image or text — which uses more energy?
+13. Which two Chapter 4 techniques are named as ways to improve results?
+14. Which senior roles should be involved in privacy and security decisions?
 
 <details><summary>Answers</summary>
 
-1. **Hallucination** = output that appears factually incorrect or irrelevant to the task
-   (invented). **Reasoning error** = misinterpreting logical structures such as cause-and-effect
-   or conditional logic, leading to incorrect conclusions. **Bias** = output favouring certain
-   types of information, approaches or assumptions.
-2. Because they **lack true logical reasoning and rely on pattern matching**.
-3. **The data on which the model was trained.**
+1. **Hallucination** — output that's factually wrong or irrelevant (invented).
+   **Reasoning error** — misreading logical structure and reaching a wrong conclusion.
+   **Bias** — output that systematically favours certain information or assumptions.
+2. They **lack true logical reasoning and rely on pattern matching**.
+3. **The data the model was trained on.**
 4. **Cross-verification, domain expertise consultation, consistency checks.**
 5. **Logical validation** and **output testing**.
-6. **The estimated risk level** of hallucinations/reasoning errors/biases in that test task.
-7. **Lowering the temperature** (cost: **limits creativity and diversity**, outputs become
-   repetitive/overly deterministic) and **setting random seeds**.
-8. **Exceeding the LLM context window with long prompts** to overload its memory, causing it to
-   **reveal random snippets of training data**.
+6. **The estimated risk level** of the task.
+7. **Lowering the temperature** (cost: **limits creativity and diversity**, output becomes
+   repetitive) and **setting random seeds**.
+8. **Overloading the context window with very long prompts** so the model reveals fragments of its
+   **training data**.
 9. **Data poisoning.**
-10. **(1)** Commercial secure offering from an LLM provider; **(2)** operate the LLM in a secure
-    cloud; **(3)** install the LLM in the organization's own infrastructure.
-11. Regulation = **EU AI Act**. Framework = **NIST AI Risk Management Framework**.
-    (ISO/IEC 42001 and 23053 are Standards.)
-12. **Generating an image** — roughly as much energy as fully charging a smartphone, versus a
-    small percentage of a charge for text.
+10. **(1)** A commercial secure offering from a provider; **(2)** a secure cloud;
+    **(3)** your own infrastructure.
+11. Regulation = **EU AI Act**. Framework = **NIST AI RMF**. (Both ISO/IEC items are Standards.)
+12. **Generating an image** — roughly a full phone charge, versus a small percentage for text.
 13. **Retrieval-Augmented Generation (RAG)** and **fine-tuning**.
 14. **Senior Security Engineers, Legal counsel, the CTO, or the CISO.**
 </details>

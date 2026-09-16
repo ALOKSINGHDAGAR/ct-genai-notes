@@ -1,369 +1,376 @@
-# Chapter 2 — Prompt Engineering for Effective Software Testing
+# Chapter 2 — Writing Prompts That Actually Work
 
-> ## ⭐ THE MOST IMPORTANT CHAPTER IN THE EXAM
-> **Exam weight: 11 questions, 16 points (35%) — 0×K1, 6×K2, 5×K3**
-> Teaching time: 365 minutes (45% of the course).
->
-> **5 of the 6 K3 questions in the entire exam come from section 2.2.** Each K3 is worth
-> **2 points**. Section 2.2 alone is worth **10 points** — a third of the pass mark.
-> If you are short on time, study this chapter first and study it twice.
-
-## Learning objectives
-
-| LO | K | Objective |
-|---|---|---|
-| GenAI-2.1.1 | K2 | **Give examples** of the structure of prompts used in GenAI for software testing |
-| GenAI-2.1.2 | K2 | **Differentiate** core prompting techniques for software testing |
-| GenAI-2.1.3 | K2 | **Distinguish** between system prompts and user prompts |
-| GenAI-2.2.1 | **K3** | **Apply** generative AI to **test analysis** tasks |
-| GenAI-2.2.2 | **K3** | **Apply** generative AI to **test design and test implementation** tasks |
-| GenAI-2.2.3 | **K3** | **Apply** generative AI to **automated regression testing** |
-| GenAI-2.2.4 | **K3** | **Apply** generative AI to **test monitoring and test control** tasks |
-| GenAI-2.2.5 | **K3** | **Select and apply** appropriate prompting techniques for a given context and test task |
-| GenAI-2.3.1 | K2 | **Understand** the metrics for evaluating the results of GenAI on test tasks |
-| GenAI-2.3.2 | K2 | **Give examples** of techniques for evaluating and iteratively refining prompts |
-
-## Keywords
-
-**Testing terms:** acceptance criteria · test script · test case · test condition · test data ·
-test design · test report
-**GenAI terms:** few-shot prompting · meta prompting · natural language processing ·
-one-shot prompting · prompt · prompt chaining · prompt engineering · system prompt ·
-user prompt · zero-shot prompting
+**Worth 16 points out of 46 — more than any other chapter.**
+**Eleven questions, and five of them are the 2-point "apply it" questions.**
 
 ---
 
-# STEP 1 — The 6 components of a structured prompt (GenAI-2.1.1, K2)
+## Read this bit first
 
-**Memorise these six in order. This is the most quotable list in the syllabus.**
+If you only have time to learn one chapter properly, learn this one.
 
-| # | Component | Definition (syllabus wording) | Example for a test task |
+Here is why. The exam has six questions worth 2 points each instead of 1. They are called **K3**
+questions, and they give you a situation and ask what you would do. **Five of those six live in this
+chapter**, all in one section (section 2.2, "applying prompts to test tasks").
+
+That one section is worth **10 points**. The pass mark is 30 out of 46.
+
+So: this chapter is 16 points, and the next one is 11. Together that is 27 — almost a pass on its own.
+
+---
+
+## Part 1 — A good prompt has six parts
+
+A prompt is just what you type to the AI. A **structured prompt** is one where you deliberately
+include six things.
+
+Think of it like briefing a new junior tester who has just joined and knows nothing:
+
+| # | Part | What it does | The junior-tester version |
 |---|---|---|---|
-| 1 | **Role** | The **perspective or persona** the model should take. Helps it determine its responsibilities and adopt an appropriate **tone or approach**. | "You are an experienced ISTQB-certified test analyst." |
-| 2 | **Context** | The **background information** the model needs to determine the test conditions — the test object, the functionality to be tested, relevant contextual information. | "We are testing the checkout flow of an e-commerce web app." |
-| 3 | **Instruction** | **Directives** outlining the specific task. **Clear, imperative and concise**; includes a task description and relevant requirements. | "Generate test conditions for the following user story." |
-| 4 | **Input data** | Any information needed to perform the task — **user stories, acceptance criteria, screenshots, code, existing test cases or output examples**. | The actual user story text + a GUI wireframe |
-| 5 | **Constraints** | **Restrictions or special considerations** the LLM should adhere to. They **specify how instructions should be applied to input data**. | "Only functional tests. Maximum 10 test cases. Do not invent requirements." |
-| 6 | **Output format** | The expected **format, structure or characteristics** of the response. | "Return a Markdown table with columns: ID, Precondition, Steps, Expected Result." |
+| 1 | **Role** | Tells the AI who to be | "You are an experienced test analyst" |
+| 2 | **Context** | Background about the situation | "We're testing the checkout on an e-commerce site" |
+| 3 | **Instruction** | The actual task — clear and direct | "Write test conditions for this user story" |
+| 4 | **Input data** | The material to work on | *(paste the user story, screenshot, code, existing tests)* |
+| 5 | **Constraints** | Limits and rules to follow | "Functional tests only. Max 10. Don't invent requirements" |
+| 6 | **Output format** | How you want the answer laid out | "A table with ID, Steps, Expected Result" |
 
-### 🧠 Memory hook
-**R-C-I-I-C-O** → **"Really CleverIpswich Inspectors Check Output"**
-Or think of it as briefing a new junior tester:
-*who you are → where we are → what to do → what to work on → what not to do → how to hand it back.*
+Read down that right-hand column and it flows naturally:
+**who you are → where we are → what to do → what to work on → what not to do → how to hand it back.**
 
-### ⚠️ Traps
-- The syllabus says **six** components. Options adding a 7th ("temperature", "model selection",
-  "examples", "token limit") are wrong. **Examples belong to few-shot prompting — a *technique*,
-  not a prompt *component*.**
-- **Constraints vs Instruction**: Instruction = *what to do*. Constraints = *restrictions on how
-  it is applied*. This distinction is examinable.
-- **Context vs Input data**: Context = background about the situation. Input data = the actual
-  artefacts to process.
-- The structure "**should be combined with the implementation of prompting techniques**" — it is
-  not either/or.
+### Three things the exam likes to test here
+
+**There are exactly six.** If an option adds a seventh — "examples", "temperature", "token limit",
+"which model" — it is wrong. Examples *are* important, but they belong to a **technique** called
+few-shot prompting, not to the structure.
+
+**Instruction vs Constraints.** The Instruction is *what to do*. Constraints are *restrictions on
+how it gets done*. The syllabus words it as: constraints "specify how instructions should be applied
+to input data."
+
+**Context vs Input data.** Context is background about the situation. Input data is the actual
+material you want processed.
 
 ---
 
-# STEP 2 — The 3 core prompting techniques (GenAI-2.1.2, K2)
+## Part 2 — Three techniques, and when to use each
 
-Only **three** are "core" in this syllabus. Learn each definition and its distinguishing feature.
+On top of the six-part structure, there are three techniques. Only three are "core" in this syllabus.
 
-## 1. Prompt chaining
-> **Breaking a task into a series of intermediate steps (multiple prompts).** The result of each
-> step is **manually or automatically checked and refined** before proceeding to the next step.
+### Technique 1: Prompt chaining — break it into steps and check each one
 
-- **Why it works:** greater accuracy, because **each response informs the next prompt**.
-- **Use when:** tasks are **complicated and require decomposition into subtasks** and
-  **systematic checking of intermediate LLM outputs**.
-- Also allows **dynamic interactions** in test processes.
-- **Signature feature: verification between steps.** If a question mentions checking intermediate
-  results, the answer is prompt chaining.
+Instead of one big prompt, you send several smaller ones. **After each step, you check the answer
+before moving on.**
 
-## 2. Few-shot prompting
-> **Providing the LLM with examples in the prompt.**
+Example, refining acceptance criteria:
 
-Learn the whole family — this is a guaranteed question:
+```
+Step 1 → "Find any ambiguities in this user story."
+         ↓ you read it, fix anything wrong
+Step 2 → "Now check whether each criterion is testable."
+         ↓ you check again
+Step 3 → "Now check whether anything is missing."
+```
 
-| Technique | Number of examples in the prompt |
+**Why it works:** each answer feeds the next one, and you catch mistakes early instead of finding
+them buried in a big final output.
+
+> **The one thing that defines prompt chaining is the checking between steps.** Not "several
+> prompts" — lots of things involve several prompts. It's the verification. If a question mentions
+> checking intermediate results, this is your answer.
+
+**Use it for:** complicated tasks that need breaking down, where accuracy matters.
+
+### Technique 2: Few-shot prompting — show it examples
+
+You put examples in the prompt so the AI copies the pattern.
+
+There is a family of these, and the exam definitely asks about it:
+
+| Name | How many examples |
 |---|---|
-| **Zero-shot** prompting | **No example** — relies on the model's pre-existing knowledge |
-| **One-shot** prompting | **Exactly one** example, demonstrating the expected result for a given input |
-| **Few-shot** prompting | **More than one** (a few), to further consolidate the desired response behaviour |
+| **Zero-shot** | **None.** It works from what it already knows |
+| **One-shot** | **Exactly one** |
+| **Few-shot** | **More than one** |
 
-- **Why it works:** gives a **clear reference**, ensuring results are **consistent and in line
-  with expectations**.
-- **Use when:** examples can illustrate the required behaviour, letting the model
-  **generalize effectively and produce reliable results**.
-- **Signature feature: a specific output pattern or format must be matched.**
+That's it. That's the whole distinction. Free marks.
 
-## 3. Meta prompting
-> **Leverages the AI's ability to generate or refine its own prompts.** In an iterative cycle,
-> the LLM generates prompts that are **evaluated and refined by the tester**.
+**Why it works:** examples give it a clear target, so the output comes back consistent and in the
+shape you wanted.
 
-- **Why it works:** it **takes advantage of the LLM's knowledge about optimized prompts** and
-  **reduces the manual effort required to design effective prompts**.
-- **Use when:** **efficiency and prompt optimization are critical**, or when
-  **the tester is unsure how to craft an effective prompt** — they can **co-create it** with the LLM.
-- The syllabus calls this **"pairing" with the GenAI tool** — a new way of collaborating,
-  analogous to **pair programming and pair testing**.
-- **Signature feature: the LLM writes the prompt, not the answer.**
+**Use it for:** anything where the output has to follow a **specific format or repeating pattern** —
+Gherkin given-when-then test cases, keyword-driven scripts, reports in a fixed layout.
 
-> ✅ **They can be combined.** The syllabus gives this exact worked example:
-> use **meta prompting** to create an initial prompt → that prompt may contain examples to adapt
-> and enhance (**few-shot prompting**) → finally divide the task into smaller subtasks to enable
-> validation of intermediate steps (**prompt chaining**).
+### Technique 3: Meta prompting — ask the AI to write the prompt
+
+Instead of writing the prompt yourself, you describe what you're trying to achieve and **ask the AI
+to write the prompt for you**. Then you review and improve it.
+
+**Why it works:** the AI knows a lot about what makes prompts effective, and it saves you the effort.
+
+**Use it when:** you're facing a **new kind of task and aren't sure how to phrase it**, or you want
+to optimise a prompt you already have.
+
+The syllabus calls this **"pairing" with the AI** — you and the tool working together, like pair
+programming or pair testing.
+
+> **The giveaway:** in meta prompting, the AI produces **the prompt**, not the answer.
+
+### You can combine them
+
+The syllabus spells out this exact sequence:
+
+1. **Meta prompting** writes you a first draft prompt
+2. That draft has examples in it, which you adapt and improve → **few-shot prompting**
+3. You split the job into smaller steps so you can check each one → **prompt chaining**
+
+So in the exam, **don't reject an answer just because it names two techniques.**
 
 ---
 
-# STEP 3 — System prompt vs user prompt (GenAI-2.1.3, K2)
+## Part 3 — System prompt vs user prompt
 
-| | **System prompt** | **User prompt** |
-|---|---|---|
-| **Who writes it** | The **developer or tester** | The **chatbot's user** |
-| **Visibility** | **Not visible or editable by the user** in most interfaces | **Directly visible** |
-| **Lifetime** | **Stays constant throughout the interaction session** | **Changes with each interaction** |
-| **Purpose** | Defines the LLM's **behavior, personality, and operational parameters**; **sets the rules for the entire conversation** | The **actual input or question**; forms the **immediate context for each response** |
-| **Typically contains** | **Role, context and constraints** | **Explicit instructions**, plus relevant context and **output format** instructions |
+Two different kinds of prompt, doing different jobs.
 
-**"Operational parameters"** = how the LLM responds: using a formal tone, keeping answers concise,
-respecting domain-specific rules, avoiding certain behaviour.
+**The system prompt** is the standing instruction. A developer or tester sets it once at the start.
+The person chatting usually **can't see or edit it**. It stays the same for the whole conversation
+and sets the ground rules.
 
-**Syllabus example of a system prompt:**
+Example from the syllabus:
+
 > "You are a professional software testing assistant. Always respond clearly, use formal language,
 > and focus on ISTQB-aligned practices. Avoid speculation and cite testing principles when relevant."
 
-**Syllabus example of a user prompt:**
+**The user prompt** is what you type each time. It's visible, and it changes with every message.
+
+Example from the syllabus:
+
 > "List the key differences between black-box and white-box testing with examples."
 
-**Typical usage:** set the system prompt **once at the start**, then send **successive user
-prompts** for each interaction. **The LLM generates responses by considering both together.**
-
-⚠️ Trap: "operational parameters" in the system prompt means **behavioural rules (tone, concision,
-domain rules)** — it does **not** mean temperature or seed. Those are model **hyperparameters**
-(Chapter 3.1.4).
-
----
-
-# ⭐ STEP 4 — Section 2.2: APPLYING GenAI TO TEST TASKS (5 × K3 = 10 points)
-
-This section maps GenAI onto the **standard ISTQB test process** you already know from CTFL.
-For each activity, learn **inputs → tasks → outputs**.
-
-## 2.2.1 Test analysis with GenAI (K3)
-
-**Input data:** requirements, user stories, technical specifications, **GUI wireframes**, other
-relevant information.
-**Output:** typical test analysis work products — **prioritized test conditions (e.g. acceptance criteria)**.
-
-| Task | Detail |
-|---|---|
-| **Identify potential defects in the test basis** | Analyse for **inconsistencies, ambiguities, or incomplete information**; compare similar requirement patterns or apply knowledge from previous defect reports to **flag anomalies and suggest improvements** |
-| **Generate test conditions** from the test basis | Uses **natural language processing** to interpret meaning and break requirements into **measurable, testable statements** |
-| **Prioritize test conditions based on risk level** | Using **risk likelihood and risk impact**; considers **regulatory compliance**, **user-facing features** (login, payment processing), and **historical defect data** |
-| **Support coverage analysis** | **Map requirements and user stories to test conditions** to find gaps; useful where gaps lead to **escaped defects** |
-| **Suggest test techniques** | e.g. **boundary value analysis, equivalence partitioning**, based on the type of requirement |
-
-> **Closing sentence (examinable):** "The **quality and relevance of inputs** provided to the LLM
-> in relation to the task to be completed **directly impact the accuracy and precision of the output**."
-
-**Which technique for test analysis?** The syllabus exercises use:
-- **Structured multimodal prompting** (text + GUI wireframe) → generate acceptance criteria
-- **Prompt chaining + human verification** → progressively refine acceptance criteria in this
-  order: **(1) identify ambiguities → (2) evaluate testability → (3) evaluate completeness**
-
-## 2.2.2 Test design and test implementation with GenAI (K3)
-
-Recall from CTFL: **test design** = elaborating/refining test conditions into test cases and
-testware. **Test implementation** = creating or acquiring the testware needed to run the tests.
-
-| Task | Detail |
-|---|---|
-| **Test case generation** | NLP creates draft test cases from **functional and non-functional** requirements; suggests **preconditions, inputs, expected results, coverage criteria** — from basic functional verification to complex **end-to-end** testing |
-| **Test data synthesis** | Creates **representative, data privacy-preserving synthetic test data** resembling production data, covering **extreme situations** — **simulating realistic scenarios without exposing sensitive information** |
-| **Automated test script generation** | Generates manual test procedures and automated scripts from structured test cases, **compatible with various test automation frameworks**; scripts can be **updated or extended** for new requirements |
-| **Test execution scheduling and prioritization** | Analyses test cases and their **interdependencies**, optimizing schedules by **priority, associated risks, resource availability and test objectives** |
-
-**Techniques used in the syllabus exercises:**
-- **Prompt chaining + structured prompts + meta prompting** → functional test case generation
-  (step 1: generate from acceptance criteria in a given format; step 2: **verify completeness via
-  a coverage table**; step 3: **meta-prompt** for end-to-end test procedures)
-- **Few-shot prompting** → **Gherkin-style (given-when-then)** test conditions and test cases
-- **Prompt chaining** → **test case prioritization** with priorities and dependencies
-
-## 2.2.3 Automated regression testing with GenAI (K3)
-
-**Why regression?** "As each new iteration or release is completed, the number of regression test
-cases **often increases**, making them **ideal candidates for automation, particularly in CI/CD
-pipelines due to the high frequency of test execution**."
-
-| Task | Detail |
-|---|---|
-| **Automated test script implementation with keyword-driven automation** | **Pre-defined keywords represent common test steps**; GenAI **maps keywords to specific test cases** and generates scripts |
-| **Impact analysis and test optimization** | Analyse **code changes to identify high-risk areas** → **targeted regression testing** where most needed |
-| **Self-healing and adaptive tests** | **Automatically adjust test scripts to handle minor UI or API changes**, preventing unnecessary failures and keeping suites stable |
-| **Automated test reporting and insights** | Detailed, timely reports with success metrics, failures, key insights; **dashboards** showing trends and **predictive insights on potential failure points** |
-| **Enhanced defect reporting and root cause analysis** | Automatic compilation of comprehensive defect reports with **test logs, screenshots, and test environment data** |
-
-### GUI vs API regression — learn the contrast
-
-| | **GUI regression tests** | **API regression tests** |
+| | System prompt | User prompt |
 |---|---|---|
-| **Challenge** | Frequently **unstable due to recurrent UI changes** | **Changing request/response formats, endpoints, and authentication** |
-| **GenAI helps by** | Adapting scripts to **dynamic locators and modified interactions** | Adapting scripts to **evolving API specifications** and **generating diverse test data** |
+| Who writes it | Developer or tester | The person chatting |
+| Can you see it? | **Usually not** | **Yes** |
+| Does it change? | **No — constant all session** | **Yes — every message** |
+| Usually contains | **Role, context, constraints** | **Instruction**, plus context and output format |
 
-> ⚠️ **Mandatory caveat:** "the testers must be aware that **GenAI can make mistakes**. The
-> generated output must therefore be **carefully checked, depending on the associated risk**."
+The model reads **both together** when answering.
 
-## 2.2.4 Test monitoring and test control with GenAI (K3)
-
-**Why GenAI fits:** test monitoring requires "**retrieval of large quantities of (sometimes
-unstructured) data, which are often already available in test management tools**."
-
-| Task | Detail |
-|---|---|
-| **Test monitoring and metrics analysis** | Automate monitoring; **analyse trends to predict potential risks** and **alert teams of deviations from the plan** |
-| **Test control** | Insights for **reprioritizing tests, adjusting test schedules, and reallocating resources** |
-| **Test completion insights and continuous learning** | Generate **test completion reports**, highlighting **successes and lessons learned** |
-| **Enhanced test metrics visualization and reporting** | **Dynamic dashboards and natural language summaries** so all stakeholders can access relevant metrics |
-
-**Remember the CTFL distinction:** **monitoring = gathering/comparing information**;
-**control = taking corrective action** (reprioritize, reschedule, reallocate).
+> ⚠️ Trap: the system prompt controls **behaviour** — tone, how concise to be, rules to follow. It
+> does **not** set temperature or random seed. Those are model settings, covered in Chapter 3.
 
 ---
 
-# ⭐⭐ STEP 5 — CHOOSING THE RIGHT TECHNIQUE (GenAI-2.2.5, K3)
+## Part 4 — Using all this on real test tasks (the 10-point section)
 
-**This is the highest-probability K3 question in the exam.** A scenario will describe a test task,
-and you must pick the technique. Learn this table until it is automatic.
+This is where the five 2-point questions come from. The pattern is always the same: **a situation is
+described, and you pick the right approach.**
 
-| Technique | Recommended use case | Key features & applications |
+The situations follow the normal test process you already know from Foundation Level.
+
+### Test analysis
+
+**You give it:** requirements, user stories, specifications, **GUI wireframes**.
+**You get back:** **prioritised test conditions** — for example, acceptance criteria.
+
+What it can do:
+
+- **Find problems in the requirements** — inconsistencies, ambiguities, gaps
+- **Turn requirements into test conditions** — breaking them into **measurable, testable statements**
+- **Prioritise by risk** — using likelihood and impact, plus things like **regulatory compliance**,
+  **user-facing features** (login, payments), and **past defect history**
+- **Check coverage** — mapping requirements to test conditions to find gaps
+- **Suggest test techniques** — boundary value analysis, equivalence partitioning, and so on
+
+> **Remember this line:** the **quality of what you feed in directly determines the quality of what
+> comes out.** Rubbish in, rubbish out — and the exam says it in almost those words.
+
+### Test design and test implementation
+
+Quick reminder from Foundation Level: *design* turns test conditions into test cases; *implementation*
+builds the testware you need to run them.
+
+What it can do:
+
+- **Write draft test cases** from functional *and* non-functional requirements — suggesting
+  preconditions, inputs, expected results, coverage criteria
+- **Create synthetic test data** that looks like production data but **protects privacy** — realistic
+  scenarios **without exposing anyone's real information**
+- **Write automated scripts** from test cases, for **various automation frameworks**, and update them
+  when requirements change
+- **Schedule and prioritise execution** based on priority, risk, resources, and **dependencies
+  between tests**
+
+### Automated regression testing
+
+Why regression is the natural fit: every release adds more regression tests, they get run constantly
+in **CI/CD pipelines**, and that makes them **ideal candidates for automation**.
+
+What it can do:
+
+- **Write keyword-driven scripts** — where **pre-set keywords stand for common test steps**, and the
+  AI maps them to test cases
+- **Analyse code changes** to find **high-risk areas**, so you test where it actually matters
+- **Self-healing tests** — **automatically fixing scripts when the UI or API changes slightly**, so a
+  renamed button doesn't break your whole suite
+- **Write test reports** with metrics, failures, trends and dashboards
+- **Build better defect reports**, pulling in **logs, screenshots and environment details**
+
+**GUI vs API — the exam contrasts these:**
+
+| | What keeps breaking | How AI helps |
 |---|---|---|
-| **Prompt chaining** | **Complex tasks requiring precision with human verification at each step** | **Breaks tasks into smaller steps.** Useful for **test analysis, test design and test automation**, where each test step is checked for functional correctness |
-| **Few-shot prompting** | **Repetitive or specific/constrained output format tasks** | **Provides examples** for repetitive generation with a **specific pattern** — e.g. **Gherkin-style test cases (scenario-based)**, **keyword-driven testing**, or **test reporting with a specific output format** |
-| **Meta prompting** | **Flexible, dynamic tasks; useful for crafting prompts for new tasks** | **General description of the objective**, guiding the LLM to create the prompt. Useful for complex tasks such as **test report analysis and anomaly detection** |
+| **GUI tests** | The **UI changes constantly** | Adapts to **dynamic locators** and changed interactions |
+| **API tests** | **Request/response formats, endpoints, authentication** change | Adapts to **evolving API specs**, generates varied test data |
 
-### 🎯 Decision rules for the exam
+> ⚠️ The syllabus insists: **GenAI makes mistakes. Check the output — how carefully depends on the
+> risk.**
 
-Read the scenario and look for the trigger word:
+### Test monitoring and test control
 
-| If the scenario says… | Choose |
-|---|---|
-| "complex", "multi-step", "verify each step", "break down", "intermediate results", "decompose" | **Prompt chaining** |
-| "specific format", "consistent pattern", "Gherkin", "given-when-then", "keyword-driven", "repetitive", "like these examples" | **Few-shot prompting** |
-| "not sure how to write the prompt", "new task", "optimize the prompt", "flexible", "dynamic", "anomaly detection", "test report analysis" | **Meta prompting** |
+Why AI suits this: monitoring means wading through **huge amounts of data, often unstructured**, that
+is already sitting in your test management tools.
 
-⚠️ **Do not forget combinations are valid.** If the scenario has several of these characteristics,
-an option combining techniques may well be correct. The syllabus explicitly endorses
-**meta → few-shot → chaining** as a sequence.
+- **Monitoring** — spotting trends, predicting risks, **flagging when things drift off plan**
+- **Control** — suggesting you **reprioritise tests, adjust the schedule, move resources**
+- **Completion reports** — what went well, lessons learned
+- **Dashboards and plain-English summaries** so everyone can see progress
+
+Quick reminder: **monitoring = watching and measuring. Control = doing something about it.**
 
 ---
 
-# STEP 6 — Evaluating GenAI results (GenAI-2.3.1, K2)
+## Part 5 — Picking the right technique (the question you will definitely get)
 
-**7 metrics.** Learn each definition *and* its testing example — ISTQB loves to swap the examples.
+This is the highest-probability 2-point question in the exam. Learn this until it's automatic.
 
-| Metric | Definition | Testing example |
+| Technique | Best for | Named examples in the syllabus |
 |---|---|---|
-| **Accuracy** | Overall **correctness** of the output against expert-written test cases, requirements or other standards | Degree to which generated test cases **cover all specified requirements** |
-| **Precision** | Correctness of the output **with respect to a specific objective** | Degree to which generated test cases **correctly identify anomalies** |
-| **Recall** | Ability to **identify all relevant instances** within a dataset | Degree to which generated test cases cover **valid and invalid equivalence partitions** of a data class |
-| **Relevance and Contextual Fit** | Whether the output is **applicable and appropriate for a given context** | Degree to which test cases are **consistent with the test basis** and integrate **domain-specific requirements** |
-| **Diversity** | A **wide range of inputs and scenarios** are covered, **avoiding repetition** | Degree to which test cases cover **various user behaviours** and **explore edge cases** |
-| **Execution Success Rate** | Proportion of generated artefacts that can be **executed successfully as is** | How many generated scripts run **without syntax errors or output format issues** |
-| **Time Efficiency** | **Time saved compared to manual test efforts** | Time for AI to generate test cases **vs** time a human would take manually |
+| **Prompt chaining** | **Complex tasks needing accuracy, with a human check at each step** | Test analysis, test design, test automation |
+| **Few-shot prompting** | **Repetitive work, or a strict output format** | **Gherkin test cases**, **keyword-driven testing**, reports in a fixed format |
+| **Meta prompting** | **Flexible or unfamiliar tasks; writing a prompt for something new** | **Test report analysis**, **anomaly detection** |
 
-**Memory hook — "A PRRDET":** Accuracy, Precision, Recall, Relevance, Diversity, Execution
-success rate, Time efficiency.
+### How to answer these in the exam
 
-### Two closing sentences you must know
-1. Testers may evaluate these **manually (reviews)** or **automate** them, e.g. by **comparing
-   LLM output against a predefined reference**.
-2. > "Given the **non-deterministic nature** of GenAI, the **metrics must be based on
-   > statistically relevant data**."
-   ⚠️ **A single run proves nothing.** This is a favourite exam point.
-3. Beyond these general metrics, **task-specific metrics** can be tailored to specific test activities.
+Read the scenario and hunt for the giveaway words:
 
----
+**Points to prompt chaining:**
+complex · multi-step · "verify each step" · "break it down" · intermediate results · needs accuracy
 
-# STEP 7 — Refining prompts iteratively (GenAI-2.3.2, K2)
+**Points to few-shot prompting:**
+specific format · Gherkin · given-when-then · keyword-driven · repetitive · "like these examples"
 
-**5 techniques:**
-
-| Technique | What you do |
-|---|---|
-| **Iterative prompt modification** | Start with a base prompt and **iteratively modify based on actual results** — gradually adding context or adjusting wording (e.g. terminology) to improve specificity and relevance |
-| **A/B testing of prompts** | Create **multiple versions** and evaluate **which produces better results based on predefined metrics** — determines which **phrasing or structure** works best |
-| **Output analysis** | Examine output for **inaccuracies or inconsistencies** (e.g. against the test basis). **Understanding the types of errors helps refine prompts to avoid similar defects in future** |
-| **Integrate user feedback** | Gather input from **testers** on the **usefulness and clarity** of output (e.g. level of detail of generated tests) |
-| **Adjust prompt length and specificity** | Experiment with different lengths and detail levels. **Sometimes more context helps; in other cases shorter prompts yield better generalization** |
-
-⚠️ Note the last one carefully: **longer is NOT always better.** An option saying "always provide
-as much context as possible" is wrong.
-
-### The organizational payoff (bridges to Chapter 5)
-> Sharing practices across the test team **standardizes prompt techniques**, maintains
-> **consistent quality**, and promotes a **culture of learning and iterative improvement** —
-> e.g. by **sharing prompt libraries**.
+**Points to meta prompting:**
+"not sure how to write the prompt" · new task · optimise the prompt · flexible · test report
+analysis · anomaly detection
 
 ---
 
-# ⚠️ Chapter 2 exam traps
+## Part 6 — Measuring whether the AI did a good job
 
-1. **Six** prompt components — not five, not seven. **Examples are a technique, not a component.**
-2. **Zero-shot = 0 examples, one-shot = 1, few-shot = more than one.** Easy marks; don't lose them.
-3. **Prompt chaining's defining feature is verification between steps** — not just "multiple prompts".
-4. **Meta prompting = the LLM generates/refines the prompt**, not the answer.
-5. **System prompt is set once and is hidden**; user prompt changes every turn and is visible.
-6. **Metrics must be based on statistically relevant data** because output is non-deterministic.
-7. **Shorter prompts sometimes win.** Beware "always add more context".
-8. **GenAI output must always be checked** — proportionate to the associated risk.
-9. **Accuracy vs Precision vs Recall**: Accuracy = overall correctness vs a standard;
-   Precision = correctness for a *specific objective*; Recall = found *all* relevant instances.
-10. **Techniques combine.** Don't reject a combined option just because it names two techniques.
+Seven metrics. The exam likes to swap the examples around, so learn what each one actually measures.
+
+| Metric | Plain meaning | Testing example |
+|---|---|---|
+| **Accuracy** | Is it **right overall**, compared to a proper standard? | Do the test cases cover all the requirements? |
+| **Precision** | Is it right **for one specific purpose**? | Do the test cases correctly find anomalies? |
+| **Recall** | Did it find **everything** it should have? | Do the tests cover valid **and** invalid equivalence partitions? |
+| **Relevance and Contextual Fit** | Does it **suit this situation**? | Do the tests match the test basis and domain requirements? |
+| **Diversity** | Is there **variety, or is it repetitive**? | Do the tests cover different user behaviours and edge cases? |
+| **Execution Success Rate** | Does it **actually run as-is**? | How many generated scripts run without syntax errors? |
+| **Time Efficiency** | Did it **save time** versus doing it manually? | AI time vs human time for the same tests |
+
+The three that get confused are the first three:
+- **Accuracy** = correct overall
+- **Precision** = correct for one specific objective
+- **Recall** = found all of them
+
+### One rule you must remember
+
+> Because the AI is **non-deterministic**, these metrics have to be based on
+> **statistically relevant data**.
+
+In plain terms: **running it once proves nothing.** You might have got lucky or unlucky. You need
+enough runs to be meaningful. This is a favourite exam point.
+
+You can measure manually by reviewing, or automatically by comparing output against a known-good
+reference. And beyond these seven general metrics, you can add **task-specific metrics** of your own.
 
 ---
 
-# ✅ Chapter 2 self-check
+## Part 7 — Improving a prompt that isn't working
 
-1. List the six components of a structured prompt, in order.
-2. Which component specifies restrictions on how instructions apply to input data?
-3. Distinguish zero-shot, one-shot and few-shot prompting.
-4. What single feature most distinguishes prompt chaining from simply sending several prompts?
-5. When is meta prompting especially beneficial?
-6. Name three things a system prompt typically contains.
-7. A team must generate test cases in a strict Gherkin given-when-then format. Which technique?
-8. A tester must estimate test effort and prioritize a complex test suite with dependencies,
-   checking the logic at each stage. Which technique?
-9. A tester does not know how to phrase a prompt for a brand-new test-report-analysis task.
-   Which technique?
-10. Which metric measures whether generated scripts run without syntax errors?
-11. Which metric measures coverage of valid and invalid equivalence partitions?
-12. Why must evaluation metrics be based on statistically relevant data?
-13. Give the recommended three-step prompt-chaining order for refining acceptance criteria.
-14. Name the two distinct challenges of GUI vs API regression testing.
+Five techniques:
+
+1. **Iterative modification** — start with a basic prompt and keep tweaking it based on what you get
+   back, adding context or changing wording
+2. **A/B testing** — write two or more versions and **compare them against your metrics** to see
+   which wins
+3. **Output analysis** — study the mistakes. Understanding **what kind of errors** you get tells you
+   what to fix in the prompt
+4. **Gather user feedback** — ask the testers using it whether the output is actually useful and
+   clear
+5. **Adjust length and specificity** — try longer, try shorter
+
+> ⚠️ On that last one: **more context is not always better.** The syllabus says plainly that
+> "in other cases shorter prompts may yield better generalization." Any option saying "always give
+> as much context as possible" is wrong.
+
+### And share what works
+
+Teams that share their prompts build **prompt libraries**, standardise quality, and stop repeating
+the same mistakes. This connects to Chapter 5, where it becomes an organisational practice.
+
+---
+
+## Traps to watch for
+
+1. **Six components.** Examples are a technique, not a component.
+2. **Zero-shot = 0, one-shot = 1, few-shot = more than one.** Don't lose these marks.
+3. **Prompt chaining is defined by the checking between steps.**
+4. **Meta prompting produces the prompt, not the answer.**
+5. **System prompt: set once, hidden, constant. User prompt: visible, changes every turn.**
+6. **One run proves nothing** — metrics need statistically relevant data.
+7. **Shorter prompts sometimes work better.**
+8. **Always check the output**, proportionate to the risk.
+9. **Techniques combine.** Two-technique answers can be correct.
+
+---
+
+## Quick self-check
+
+1. List the six parts of a structured prompt in order.
+2. Which part sets restrictions on how the instruction is applied?
+3. Zero-shot, one-shot, few-shot — how many examples in each?
+4. What single thing defines prompt chaining?
+5. When is meta prompting the right choice?
+6. Name three things a system prompt usually holds.
+7. Test cases must come out in strict Gherkin format, for many user stories. Which technique?
+8. A complex prioritisation with dependencies, checked at each stage. Which technique?
+9. A tester doesn't know how to phrase a prompt for a brand-new task. Which technique?
+10. Which metric asks "does the script actually run?"
+11. Which metric asks "did it find all of them?"
+12. Why do metrics need statistically relevant data?
+13. What's the three-step order for refining acceptance criteria with chaining?
+14. What breaks GUI regression tests, and what breaks API regression tests?
 
 <details><summary>Answers</summary>
 
 1. **Role, Context, Instruction, Input data, Constraints, Output format.**
 2. **Constraints.**
-3. **Zero-shot** = no examples (relies on pre-existing knowledge); **one-shot** = one example;
-   **few-shot** = more than one example.
-4. **The result of each step is checked (manually or automatically) and refined before proceeding
-   to the next step.**
-5. When **efficiency and prompt optimization are critical**, or when the **tester is unsure how to
-   craft an effective prompt** and wants to co-create it with the LLM ("pairing").
-6. **Role, context and constraints** (plus general instructions, e.g. on expected output).
-7. **Few-shot prompting** — specific/constrained output format with a repeating pattern.
-8. **Prompt chaining** — complex task needing precision with human verification at each step.
-9. **Meta prompting** — flexible/dynamic task, crafting a prompt for a new task; the syllabus
-   names test report analysis and anomaly detection explicitly.
+3. **Zero-shot = none. One-shot = exactly one. Few-shot = more than one.**
+4. **You check and refine the result of each step before moving to the next.**
+5. When the task is **flexible or new**, when you want to **optimise a prompt**, or when you're
+   **unsure how to phrase one** and want to build it with the AI.
+6. **Role, context and constraints** (plus general instructions about expected output).
+7. **Few-shot prompting** — strict repeating output format.
+8. **Prompt chaining** — complex, needs accuracy with a check at each step.
+9. **Meta prompting.**
 10. **Execution Success Rate.**
 11. **Recall.**
-12. Because GenAI is **non-deterministic** — outputs vary for the same input, so a single sample
-    is not representative.
-13. **(1) Identify ambiguities → (2) evaluate testability → (3) evaluate completeness**, with
-    manual verification and correction at each step.
-14. **GUI:** instability from recurrent UI changes (GenAI adapts to dynamic locators and modified
-    interactions). **API:** changing request/response formats, endpoints and authentication
-    (GenAI adapts to evolving API specs and generates diverse test data).
+12. Because the AI is **non-deterministic** — one output isn't representative.
+13. **Ambiguities → testability → completeness**, checking and correcting at each step.
+14. **GUI:** constant UI changes (AI adapts to dynamic locators and changed interactions).
+    **API:** changing request/response formats, endpoints and authentication (AI adapts to evolving
+    specs and generates varied data).
 </details>

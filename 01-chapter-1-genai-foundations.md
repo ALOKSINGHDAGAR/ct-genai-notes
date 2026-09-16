@@ -1,247 +1,329 @@
-# Chapter 1 — Introduction to Generative AI for Software Testing
+# Chapter 1 — Getting Started with Generative AI
 
-> **Exam weight: 7 questions, 7 points (15%) — 1×K1, 6×K2, 0×K3**
-> Teaching time in syllabus: 100 minutes.
-> No K3 here, so nothing to *apply* — this chapter is definitions and understanding.
+**Worth 7 points out of 46. Seven questions, none of them hard "apply" questions.**
 
-## Learning objectives (memorise the verbs)
+---
 
-| LO | K | Objective |
+## What this chapter is really about
+
+Before you can learn how to *use* AI for testing, you need to know what AI actually is and how it
+works. That is all this chapter does. There is no scenario-solving here — just understanding.
+
+Think of it as the vocabulary lesson before the conversation.
+
+---
+
+## Part 1 — There are four kinds of AI, and GenAI is only one
+
+People say "AI" as if it is one thing. It is not. The syllabus wants you to tell four types apart.
+
+### 1. Symbolic AI — the rule follower
+
+Someone sits down and writes rules by hand:
+
+> IF the customer is over 60 AND the order is over ₹5000, THEN apply a discount.
+
+The computer just follows them. It never learns anything. It only knows what a human typed in.
+
+**Remember it as:** rules and logic, written by people.
+
+### 2. Classical machine learning — learns, but you point at what matters
+
+Here the computer learns from data instead of rules. But **a human has to decide which pieces of
+information are worth looking at.** Those pieces are called **features**.
+
+Say you want to predict which bug reports are critical. A human decides: "look at the module name,
+the customer type, and how many users reported it." The machine then learns patterns from those
+three things.
+
+Picking those three things is called **feature selection**, and a human does it.
+
+**Remember it as:** the machine learns, but *you* choose what it looks at.
+
+### 3. Deep learning — figures out what matters by itself
+
+Same idea, but now the computer uses **neural networks** with many layers, and it **works out the
+important features on its own**. Nobody tells it to look at module name or customer type — it finds
+useful patterns itself.
+
+This is what makes it good at messy things like images, audio and video, where a human could never
+list all the features.
+
+> ⚠️ Small but examinable detail: humans are still involved — labelling data, tuning the model,
+> checking results. So an answer saying "no human involvement at all" is wrong.
+
+**Remember it as:** the machine figures out what to look at.
+
+### 4. Generative AI — creates something new
+
+Deep learning that doesn't just classify or predict, but **makes new content**: text, images, code.
+It learned patterns from huge amounts of training data, and now it produces new material that
+follows those patterns.
+
+**Remember it as:** it creates things.
+
+### How they fit together
+
+```
+AI
+ ├── Symbolic AI          (rules — off on its own branch)
+ └── Machine Learning
+      └── Deep Learning
+           └── Generative AI
+```
+
+Generative AI is a *type of* deep learning, which is a *type of* machine learning. Symbolic AI
+sits outside all of that, because it does not learn from data at all.
+
+### Why testers like GenAI
+
+Here is the sentence the exam cares about:
+
+> GenAI uses **pre-trained models you can use straight away, with no extra training phase**.
+
+With classical ML you would have to gather data and train a model before you got any value. With
+GenAI you just open it and start asking. That is the big advantage.
+
+But — and the syllabus says this immediately after — **this comes with risks**. Chapter 3 is
+entirely about those risks. If an exam option makes GenAI sound risk-free, it is wrong.
+
+---
+
+## Part 2 — How a large language model actually works
+
+A **large language model (LLM)** is a program trained on an enormous amount of text — books,
+articles, websites — until it got very good at producing human-like writing.
+
+There is also a **small language model (SLM)**: same idea, just a smaller model with **fewer
+parameters**. Lighter, cheaper, more focused.
+
+Four ideas make an LLM work. Take them one at a time.
+
+### Idea 1: Tokenization — chopping text into pieces
+
+The model cannot read a sentence the way you do. First it chops the text into small pieces called
+**tokens**.
+
+A token might be a whole word, part of a word, or even a single character:
+
+```
+"unbelievable"   →   "un"  +  "believ"  +  "able"
+```
+
+**So a token is not the same as a word.** That trips people up in the exam.
+
+### Idea 2: Embeddings — turning pieces into numbers
+
+Computers only do maths, not meaning. So each token gets turned into a long list of numbers called
+an **embedding**.
+
+Picture a gigantic map. Every token is a dot on it. Tokens that mean similar things end up **close
+together** — "cat" sits near "kitten", far from "invoice".
+
+That closeness is how the model senses that two words are related.
+
+> **Put tokenization and embeddings together and you get the point:** they convert language into
+> numbers the model can work with.
+
+### Idea 3: The transformer — guessing the next piece, over and over
+
+The **transformer** is the design of the neural network underneath. Its job is simple to describe:
+
+**Look at everything so far, then guess the next token. Then do it again. And again.**
+
+It is predictive text on your phone, except vastly better at it.
+
+Now here is the single most important sentence in the whole syllabus:
+
+> ### It produces text that is **statistically plausible**. Plausible is not the same as correct.
+
+The model writes what *sounds* right based on patterns it has seen. It has no idea whether what it
+just wrote is true. It is like a very confident colleague who never admits they don't know
+something — fluent, convincing, and sometimes completely wrong.
+
+Everything in Chapter 3 grows out of this one fact.
+
+### Idea 4: Non-determinism — the same question, different answers
+
+Ask an LLM the same thing twice and you can get two different answers.
+
+Why? Because when it picks the next token, it **picks probabilistically** rather than always taking
+the single most likely one. There is deliberate randomness in there, controlled by settings called
+**hyperparameters**.
+
+**Exam answer:** non-determinism comes from *the probabilistic nature of inference, plus
+hyperparameter settings*. Not from bugs. Not from bad prompts.
+
+### And one more: the context window
+
+The **context window** is how much text the model can hold in mind at once, **measured in tokens**.
+
+Think of it as the size of its desk. A bigger desk means it can keep a longer document in view and
+stay coherent — handy when you feed it a huge test log.
+
+**But bigger is not free.** More tokens means more computing and more processing time.
+
+> ⚠️ Common trap: "a bigger context window is always better." No. There is a cost. Nothing in this
+> syllabus is free.
+
+---
+
+## Part 3 — Three types of LLM, in the order they are built
+
+These are built one on top of the next. The order matters.
+
+### 1. Foundation LLM — the raw graduate
+
+Trained on a huge, broad pile of data. Knows a bit about everything. Very capable, but not shaped
+for any particular job — the syllabus says it **typically requires further adaptation**.
+
+*Also called a **Base LLM**. Learn that synonym.*
+
+### 2. Instruction-tuned LLM — the trained employee
+
+Take a foundation model and train it further on **examples of prompts paired with good responses**.
+Now it actually follows instructions instead of rambling.
+
+The syllabus says it is optimised for **task adherence, instruction following, and response
+coherence**.
+
+*Confusingly, these are also called **"non-reasoning"** models. Know that too.*
+
+### 3. Reasoning LLM — the senior analyst who shows their working
+
+Take an instruction-tuned model and train it further on problems that need **step-by-step thinking**
+— logical inference, multi-step problems, **chain-of-thought**.
+
+Best for **high-cognitive-load tasks**.
+
+**The order: Foundation → Instruction-tuned → Reasoning.**
+
+### Which ones do testers actually use?
+
+**Instruction-tuned and reasoning models.** Not raw foundation models.
+
+And which of the two? The syllabus says it **depends on how complex the task is and how much
+reasoning it needs**. Simple, repetitive job → instruction-tuned. Hard multi-step problem →
+reasoning model.
+
+---
+
+## Part 4 — Models that can see, not just read
+
+A **multimodal LLM** handles more than text. It can take in **text, images, sound and video**.
+
+How? Each type of data gets converted into embeddings in its own way. For images, that conversion is
+done by a **vision-language model** before the transformer sees it.
+
+A **vision-language model** is a *subset* of multimodal models that specifically combines pictures
+and words. It can caption an image, answer questions about an image, or check whether a picture
+matches a description.
+
+### Why this matters for a tester
+
+You can hand the model **a screenshot and the user story at the same time** and ask what doesn't
+match.
+
+The syllabus gives two benefits:
+
+1. **Spot differences between what was expected and what the screenshot actually shows.**
+2. **Write richer test cases** that use both the words and the visuals, which **increases coverage**.
+
+---
+
+## Part 5 — What an LLM can do across the test process
+
+The syllabus lists **seven** things. Expect a question like "which of these is *not* a key LLM
+capability?"
+
+| # | What it does | In practice |
 |---|---|---|
-| GenAI-1.1.1 | K1 | **Recall** different types of AI: symbolic AI, classical ML, deep learning, generative AI |
-| GenAI-1.1.2 | K2 | **Explain** the basics of generative AI and large language models |
-| GenAI-1.1.3 | K2 | **Distinguish** between foundation, instruction-tuned and reasoning LLMs |
-| GenAI-1.1.4 | K2 | **Write and execute** a given prompt addressing a test task using a multimodal LLM |
-| GenAI-1.2.1 | K2 | **Give examples** of key LLM capabilities for test tasks |
-| GenAI-1.2.2 | K2 | **Compare** interaction models when using GenAI for software testing |
+| 1 | **Analyse and improve requirements** | Finds **ambiguities, inconsistencies, missing information**, and writes questions to ask stakeholders |
+| 2 | **Help create test cases** | Drafts test cases and suggests test objectives from requirements or user stories |
+| 3 | **Generate test oracles** | Works out the **expected results** |
+| 4 | **Generate test data** | Builds datasets, **sets boundary values**, makes combinations |
+| 5 | **Support test automation** | Writes scripts from test case descriptions, improves existing ones, suggests test techniques |
+| 6 | **Analyse test results** | Summarises them, **sorts anomalies by severity and priority** |
+| 7 | **Create testware** | Test plans, test reports, defect reports — and **keeps them updated as the project changes** |
 
-## Keywords you must be able to define (K1 territory)
-
-AI chatbot · context window · deep learning · embedding · feature · foundation LLM ·
-generative AI · generative pre-trained transformer (GPT) · instruction-tuned LLM ·
-large language model · machine learning · multimodal model · reasoning LLM · symbolic AI ·
-tokenization · transformer
+A phrase worth remembering: the LLM can read **requirements, specifications, screenshots, code, test
+cases and defect reports** — so it helps across the **whole** test process, not just one part.
 
 ---
 
-# STEP 1 — The AI spectrum (GenAI-1.1.1, K1)
+## Part 6 — Two ways you will actually use it
 
-This is the classic "which type of AI is this?" question. Learn the **one-line discriminator**
-for each.
+There are two ways GenAI shows up in a tester's working life.
 
-| Type | One-line discriminator | Testing example |
-|---|---|---|
-| **Symbolic AI** | **Rules and symbols.** A rule-based system that mimics human decision-making by representing knowledge as symbols and logical rules. | An expert system with hand-written IF-THEN rules |
-| **Classical machine learning** | **Data-driven, but you choose the features.** Requires data preparation, **feature selection**, and model training. | Defect categorization; predicting software problems |
-| **Deep learning** | **Neural networks that learn the features themselves.** Multiple layers; finds patterns in large complex data (images, video, audio, text) without manually defined features. | Image/pattern recognition |
-| **Generative AI** | **Deep learning that creates NEW content** (text, images, code) by learning and mimicking patterns from training data. | LLMs generating test cases |
+### The chatbot
 
-### The discriminator that wins you the mark
-- **Classical ML = humans define the features.**
-- **Deep learning = the model learns the features automatically.**
-  (Though humans may still be involved in data annotation, model tuning, result validation —
-  the syllabus explicitly adds this caveat, so "no human involvement at all" is a wrong option.)
-- **GenAI = generates new content**, and is *built on* deep learning.
+You type, it replies. Like messaging a knowledgeable colleague.
 
-### Why GenAI is attractive for testing — the key sentence
-> "The key advantage of using GenAI for software testing is that it uses **pre-trained models
-> that can be applied directly to test tasks without the need for an additional training phase**."
+- Good for **quick answers**, **exploratory testing**, and **helping new testers get up to speed**
+- Anyone can use it, including **non-technical stakeholders** — no coding needed
+- You refine answers by going back and forth (that's **prompt chaining**, coming in Chapter 2)
 
-⚠️ …*"although this does come with some risks"* (forward reference to Chapter 3). Exam options
-that present GenAI as risk-free are wrong.
+### The LLM built into a tool
 
-**Memory hook — nesting dolls:** AI ⊃ ML ⊃ Deep Learning ⊃ Generative AI. Symbolic AI sits
-*outside* the ML branch (it is rules, not learning from data).
+Here the AI is wired **into your test tools through APIs**. You don't chat with it; it works in the
+background.
 
----
+- Offers **customisation and scalability**
+- Good for **automating repetitive or complex work** — generating test cases, analysing defects,
+  creating test data
+- The advanced version of this is **AI agents** (Chapter 4)
 
-# STEP 2 — How LLMs actually work (GenAI-1.1.2, K2)
+### The link to Chapter 2
 
-An **LLM** is a GenAI model pre-trained on very large text datasets (books, articles, websites),
-based on the **generative pre-trained transformer** architecture.
+Whichever one you use, the syllabus says the same thing:
 
-An **SLM (Small Language Model)** is a compact model with **fewer parameters**, designed for
-lightweight and focused GenAI solutions.
+> Success depends on **strong prompt engineering** — clear, specific, well-built prompts.
 
-## The four concepts you must be able to explain
-
-### 1. Tokenization
-Breaking text down into smaller units called **tokens**.
-- A token can be **as small as a character or as large as a sub-word or word**.
-- The LLM tokenizes input first, so each token is understood individually **while maintaining
-  the overall context**.
-
-### 2. Embeddings
-**Numerical representations of tokens.** Each token becomes a **vector in a high-dimensional space**.
-- They encode **semantic, syntactic and contextual** relationships.
-- **Tokens with similar meanings sit close together** in that space.
-- This is what lets the LLM understand word relationships and retain context.
-
-> 💡 Tokenization and embeddings together **convert language into a numerical form the model
-> can process.** That framing is often the correct answer.
-
-### 3. The transformer model
-The neural network architecture behind LLMs. It uses **self-attention** to capture long-range
-dependencies, processes the context of extensive text sequences, and learns how tokens relate.
-
-**During inference, the LLM predicts the next token in a sequence.**
-
-> ⚠️ **Learn this sentence verbatim — it is the philosophical core of the whole syllabus:**
-> "The transformer model can be used to generate new text that is **statistically plausible**,
-> based on training data and the prompt. **But plausible is not necessarily correct.**"
-
-### 4. Non-determinism
-> "LLMs exhibit **non-deterministic behavior** primarily due to the **probabilistic nature of
-> their inference mechanisms and hyperparameter settings**. This inherent randomness can lead to
-> variations in outputs **even when the same input is provided multiple times**."
-
-Remember the *cause*: probabilistic inference + hyperparameters. (Mitigations are Chapter 3.1.4.)
-
-### 5. Context window
-> "The amount of **preceding text, measured in tokens**, that the model can consider when
-> generating responses."
-
-- **Larger context window** → maintains coherence over longer passages (e.g. analysing large test logs).
-- **But**: increasing tokens in the context window **increases computational complexity and
-  processing time**.
-
-⚠️ Classic trap: "a larger context window is always better." **No** — there is a
-cost/performance trade-off. Nothing in this syllabus is free.
+Which is exactly what Chapter 2 teaches, and Chapter 2 is worth more than double this chapter.
 
 ---
 
-# STEP 3 — Three types of LLM (GenAI-1.1.3, K2)
+## Traps to watch for
 
-These build on each other in order. Learn the **progression**.
-
-| Type | How it is made | What it is good at | Key phrase |
-|---|---|---|---|
-| **Foundation LLM** (a.k.a. **Base LLM**) | Pre-trained on vast, diverse data (text, code, images, other modalities) | General-purpose across many domains | "**Typically requires further adaptation** to meet specific task requirements" |
-| **Instruction-tuned LLM** | **Derived from foundation models**, fine-tuned on datasets **pairing prompts with expected responses** | Following human instructions; real-world usability | Optimised for "**task adherence, instruction following, and response coherence**" |
-| **Reasoning LLM** | **Extends instruction-tuned models**, trained on tasks demanding intermediate reasoning steps | Logical inference, **multi-step problem-solving**, **chain-of-thought** | Best for "**high-cognitive-load tasks**" |
-
-**Memory hook — F → I → R:** **F**oundation is raw, **I**nstruction-tuned obeys,
-**R**easoning thinks.
-
-### The exam-relevant conclusion
-> "In the context of GenAI applications for software testing, **both instruction-tuned
-> (sometimes referred to as non-reasoning) and reasoning LLMs are utilized.**
-> **The selection depends on the complexity and reasoning demands of the specific testing task.**"
-
-⚠️ Note the alias: **instruction-tuned = "non-reasoning"**. And note that foundation LLMs are
-*not* the ones normally used directly for test tasks.
+1. **Plausible is not correct.** Any option that treats LLM output as trustworthy by default is wrong.
+2. **A bigger context window costs more** computing and time.
+3. **Classical ML: humans pick the features. Deep learning: the model finds them.**
+4. **Foundation → Instruction-tuned → Reasoning**, in that order.
+5. **A token is not a word.** It can be a character, part of a word, or a word.
+6. **Similar meanings sit close together** in embedding space.
+7. **An SLM is smaller, not automatically worse** — Chapter 4 shows small models can beat big ones
+   on specific jobs.
+8. **Non-determinism comes from probabilistic inference and hyperparameters**, not from mistakes.
 
 ---
 
-# STEP 4 — Multimodal and vision-language models (GenAI-1.1.4, K2)
+## Quick self-check
 
-**Multimodal LLMs** extend the transformer to process **multiple data modalities: text, images,
-sound, and video.**
-- Tokenization is **adapted for each data type** — e.g. images are converted into embeddings
-  using **vision-language models** before being processed in the transformer.
-
-**Vision-language models** are a **subset of multimodal LLMs** that integrate visual + textual
-information. Tasks: **image captioning, visual question answering, analysing consistency between
-textual and visual input.**
-
-## Why testers care (likely K2 question)
-Multimodal LLMs can analyse:
-- **Visual elements**: screenshots, GUI wireframes
-- **Associated text**: defect reports, user stories
-
-This allows testers to:
-1. **Identify discrepancies between expected results and actual visual elements on a screenshot**
-2. **Generate rich, realistic test cases combining textual data and visual cues → increasing coverage**
-
----
-
-# STEP 5 — What LLMs can do across the test process (GenAI-1.2.1, K2)
-
-The syllabus lists **seven** capabilities. Expect "which of the following is / is not a key LLM
-capability for test tasks?"
-
-| # | Capability | What it means |
-|---|---|---|
-| 1 | **Requirements analysis and improvement** | Identify **ambiguities, inconsistencies, or missing information** in the test basis; **generate meaningful questions** to clarify requirements with stakeholders |
-| 2 | **Test case creation support** | Generate test cases; suggest test objectives from requirements/user stories |
-| 3 | **Test oracle generation** | Generate **expected results** |
-| 4 | **Test data generation** | Generate datasets, **set boundary values**, create combinations of test data |
-| 5 | **Test automation support** | Generate test scripts from test case descriptions; improve existing scripts; **identify appropriate test techniques** |
-| 6 | **Test result analysis** | Create summaries; **classify anomalies by severity and priority** |
-| 7 | **Testware creation** | Create test plans, test reports, defect reports — and **keep them updated as the project evolves** |
-
-**Memory hook — "R-C-O-D-A-R-T":** Requirements, Cases, Oracles, Data, Automation, Results, Testware.
-
-> Framing sentence: LLMs can interpret **requirements, specifications, screenshots, code, test
-> cases, and defect reports** — so they help **throughout the whole test process**.
-
----
-
-# STEP 6 — Two ways to interact with GenAI (GenAI-1.2.2, K2)
-
-This LO says **"Compare"** — so expect a side-by-side comparison question. Learn the contrasts.
-
-| | **AI Chatbot** | **LLM-Powered Testing Application** |
-|---|---|---|
-| **Interface** | Conversational, natural language | **Integrated via APIs** into test tools/frameworks |
-| **Who uses it** | Any tester; **accessible to non-technical stakeholders** | Organizations and tool vendors |
-| **Strength** | **Fast feedback**, clarification, dynamic exploration | **Customization and scalability** |
-| **Best for** | Routine tasks, **exploratory testing**, **onboarding new testers** | **Automation of repetitive or complex tasks** — test case generation, defect analysis, test data synthesis |
-| **Technique used** | **Prompt chaining** to iteratively refine outputs | Embedded GenAI; advanced form = **AI agents** (Chapter 4) |
-
-### The sentence that ties Chapter 1 to Chapter 2
-> "**Regardless** of how the tester interacts with LLMs — whether through chatbots or integrated
-> LLM-powered applications — successful implementation of generative AI in testing requires
-> **strong prompt engineering**."
-
----
-
-# ⚠️ Chapter 1 exam traps
-
-1. **"Plausible ≠ correct."** Any option claiming LLM output is reliable by nature is wrong.
-2. **Bigger context window is not automatically better** — it costs complexity and time.
-3. **Classical ML needs feature selection; deep learning learns features automatically.**
-4. **Instruction-tuned is derived FROM foundation; reasoning EXTENDS instruction-tuned.** The
-   order matters, and foundation models "require further adaptation."
-5. **Tokens are not words.** A token can be a character, sub-word, or word.
-6. **Embeddings represent tokens**, and similar meanings are *close together* in vector space.
-7. **SLM = fewer parameters**, not "less accurate at everything." (Ch.4 shows fine-tuned SLMs
-   can be highly effective on specific tasks at lower cost.)
-8. **Non-determinism is caused by probabilistic inference + hyperparameters**, not by bugs or
-   by bad prompts.
-
----
-
-# ✅ Chapter 1 self-check
-
-1. Which AI type requires manual feature selection?
-2. What does the transformer predict during inference?
-3. Give the two-part reason for LLM non-determinism.
-4. What is the trade-off of a larger context window?
-5. Name the three LLM types in the order they are built.
-6. What is another name for a foundation LLM?
-7. Which LLM types are actually used for software test tasks?
-8. Name four of the seven key LLM capabilities for test tasks.
-9. Give two benefits of multimodal LLMs specifically for testing.
-10. Which interaction model is best for onboarding a new tester, and why?
+1. Which type of AI needs a human to choose the features?
+2. What does the model predict each step?
+3. Why do you get different answers to the same question?
+4. What is the downside of a bigger context window?
+5. Name the three LLM types in build order.
+6. What else is a foundation LLM called?
+7. Which LLM types do testers actually use, and what decides which?
+8. Name four of the seven LLM capabilities for testing.
+9. Give two testing benefits of a model that can see images.
+10. Which is better for onboarding a new tester — chatbot or built-in tool? Why?
 
 <details><summary>Answers</summary>
 
-1. **Classical machine learning** (data preparation, feature selection, model training).
-2. **The next token in a sequence** — producing text that is statistically plausible, not
-   necessarily correct.
-3. **The probabilistic nature of its inference mechanisms** and **hyperparameter settings**.
-4. It maintains coherence over longer passages, **but increases computational complexity and
-   processing time**.
+1. **Classical machine learning** — it needs data preparation, feature selection, and training.
+2. **The next token**, producing text that is statistically plausible but not necessarily correct.
+3. **Probabilistic inference plus hyperparameter settings** — there is deliberate randomness.
+4. It **costs more computing power and processing time**.
 5. **Foundation → Instruction-tuned → Reasoning.**
-6. **Base LLM.**
-7. **Instruction-tuned (non-reasoning) and reasoning LLMs** — chosen by the complexity and
-   reasoning demands of the task.
-8. Any four of: requirements analysis/improvement, test case creation support, test oracle
-   generation, test data generation, test automation support, test result analysis, testware creation.
-9. (a) Identify **discrepancies between expected results and actual visual elements on a
-   screenshot**; (b) generate **richer test cases combining text and visual cues, increasing
-   coverage**.
-10. **AI chatbot** — its conversational interface gives quick access to testing knowledge and
-    practices, and is accessible even to non-technical users.
+6. A **Base LLM**.
+7. **Instruction-tuned and reasoning LLMs**, chosen by **how complex the task is and how much
+   reasoning it demands**.
+8. Any four of: analyse/improve requirements, help create test cases, generate test oracles,
+   generate test data, support automation, analyse results, create testware.
+9. **(a)** Spot differences between expected results and what a screenshot actually shows.
+   **(b)** Write richer test cases using text and visuals together, increasing coverage.
+10. **The chatbot** — it gives quick, conversational access to testing knowledge and is easy enough
+    for anyone to use.
 </details>

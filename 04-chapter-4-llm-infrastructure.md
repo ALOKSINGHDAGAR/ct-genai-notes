@@ -1,282 +1,283 @@
-# Chapter 4 — LLM-Powered Test Infrastructure for Software Testing
+# Chapter 4 — Building AI Into Your Test Setup
 
-> **Exam weight: 5 questions, 5 points (11%) — 0×K1, 5×K2, 0×K3**
-> Teaching time: 110 minutes.
-> **Exactly one question per learning objective, all K2, all worth 1 point.**
-> This is the *lowest* value-per-page chapter. Understand it, don't memorise it to death.
-
-## Learning objectives
-
-| LO | K | Objective | Your 1 mark |
-|---|---|---|---|
-| GenAI-4.1.1 | K2 | **Explain** key architectural components and concepts of LLM-powered test infrastructure | Front-end / back-end / LLM |
-| GenAI-4.1.2 | K2 | **Summarize** Retrieval-Augmented Generation | Retrieval → Generation |
-| GenAI-4.1.3 | K2 | **Explain** the role and application of LLM-powered agents in automating test processes | Agents use **tools** to **act** |
-| GenAI-4.2.1 | K2 | **Explain** the fine-tuning of language models for specific test tasks | Further training on a targeted dataset |
-| GenAI-4.2.2 | K2 | **Explain** LLMOps and its role in deploying and managing LLMs for test tasks | Three deployment approaches |
-
-## Keywords
-
-**Testing term:** test infrastructure
-**GenAI terms:** fine-tuning · LLM-powered agent · Large Language Model Operations (LLMOps) ·
-retrieval-augmented generation · vector database
+**Worth 5 points out of 46 — the smallest chapter.**
+**Five questions, all "understand" level, one per topic. No recall questions, no 2-point scenarios.**
 
 ---
 
-# STEP 1 — LLM-powered test infrastructure architecture (GenAI-4.1.1, K2)
+## Before you start
 
-**Definition:** "A system that **integrates an LLM into the test process** to enhance
-**automation, reasoning, and decision-making**."
+This chapter has the most technical-sounding words in the syllabus — RAG, LLMOps, vector databases,
+agents — and beginners often panic and over-study it.
 
-**Contrast with a chatbot:** "Unlike a traditional AI chatbot, which primarily focuses on
-**conversational interactions**, an LLM-powered test tool is designed to **support software
-testing** by processing test-related queries, analyzing requirements, generating test cases,
-and evaluating outputs."
+Don't. **It's worth 5 points and every question is straightforward understanding.** There are exactly
+five topics and exactly one question on each. Read it twice, get the core idea of each, and move on
+to Chapter 2.
 
-## The three components (multi-component design)
+Here's the whole chapter in five sentences:
 
-| Component | Role |
-|---|---|
-| **Front-end** | The **user interface** where testers interact by **inputting queries or commands** |
-| **Back-end** | Processes user input and manages **authentication, data retrieval, prompt preparation, and interaction with the LLM** |
-| **The LLM** | May be a **third-party service (accessed via API)** or a **custom in-house model**; generates responses from structured prompts |
-
-Plus: **external data sources**.
-
-## Why it goes beyond a traditional client-server model (4 points)
-
-1. **The LLM is not just a server** but a **smart processing component** that **interprets and
-   reasons based on testware**.
-2. **Unlike rule-based chatbots** that follow **scripted responses**, it **generates test insights
-   dynamically from context** — requirements, code, or test results.
-3. **The back end integrates multiple data sources:**
-   - **Relational databases** — for **structured data** used in testing, such as **test cases**
-   - **Vector databases** — for **semantic retrieval** of related content **using embeddings**
-4. **The back end enhances the LLM's raw output through post-processing**, ensuring responses
-   **align with the test conditions of the test process** before presenting them to the front-end.
-
-⚠️ **Trap:** point 4 is easy to miss. The back-end does **post-processing** of the LLM output —
-it is not a passive pipe.
-
-🧠 **Relational DB = structured data (test cases). Vector DB = semantic/embedding retrieval.**
+1. An AI test tool has a front end, a back end, and an LLM
+2. **RAG** = let the AI look things up before answering
+3. **Agents** = AI that does things, not just talks
+4. **Fine-tuning** = permanently retraining a model for your work
+5. **LLMOps** = the practices for running all this in production
 
 ---
 
-# ⭐ STEP 2 — Retrieval-Augmented Generation (GenAI-4.1.2, K2)
+## Topic 1 — How an AI-powered test tool is put together
 
-**Definition:** "RAG **enhances LLMs by incorporating additional data sources into their response
-generation process**, thereby increasing the **relevance and accuracy** of their outputs."
+An **LLM-powered test infrastructure** is a system with an LLM built into your test process, to help
+with automation, reasoning and decision-making.
 
-## The two phases — learn both
+It's different from a chatbot: a chatbot is built for **conversation**, while this is built to
+**support testing** — handling test queries, analysing requirements, generating test cases,
+evaluating output.
 
-### Phase A: Preprocessing (done in advance, offline)
-1. **Large documents are broken into smaller chunks** (the syllabus gives **256–512 tokens**) to
-   ensure **focused retrieval and compatibility with the model context window**.
-2. Each chunk is **cleaned, processed, and encoded into a high-dimensional vector (embedding)**
-   using pre-trained models.
-3. These embeddings are **stored in vector databases**, enabling **efficient similarity-based
-   retrieval at runtime (inference)**.
+### The three pieces
 
-### Phase B: User prompt processing (at runtime) — the **two-step process**
+**Front end** — the screen you interact with. You type queries and commands here.
+
+**Back end** — the engine room. It handles **authentication, fetching data, preparing the prompt,
+and talking to the LLM**.
+
+**The LLM itself** — either a **third-party service accessed through an API**, or a **custom model
+you run in-house**.
+
+Plus **external data sources** feeding into it.
+
+### Why it's more than a normal client-server app
+
+The syllabus makes four points here:
+
+1. **The LLM isn't just a server — it's a smart component** that interprets and reasons about your
+   testware
+2. **Unlike a scripted chatbot**, it generates insights **dynamically from context** — your
+   requirements, code, test results
+3. **The back end pulls from two kinds of database:**
+   - **Relational databases** — for **structured data like test cases**
+   - **Vector databases** — for **semantic retrieval using embeddings** (finding things by meaning
+     rather than exact words)
+4. **The back end cleans up the LLM's raw output** before you see it — **post-processing** it so the
+   answer fits your test process
+
+> ⚠️ Point 4 is the one people miss. **The back end is not a passive pipe.** It processes what comes
+> out of the model.
+
+**Remember:** relational = structured test data. Vector = meaning-based search.
+
+---
+
+## Topic 2 — RAG: letting the AI look things up
+
+**RAG** stands for **Retrieval-Augmented Generation**. Long name, simple idea:
+
+> **Before the AI answers, it goes and looks up relevant information from your own documents, then
+> answers using what it found.**
+
+It's the difference between a closed-book exam and an open-book one. Without RAG, the model can only
+use what it learned during training. With RAG, it can consult your actual current requirements.
+
+### How it works — two stages
+
+**Stage A: preparing the library (done in advance)**
+
+1. Your big documents get **chopped into small chunks** — the syllabus says **256–512 tokens** each.
+   Two reasons: **focused retrieval**, and **fitting inside the context window**
+2. Each chunk gets **cleaned and converted into an embedding** (that list of numbers from Chapter 1)
+3. Those embeddings get **stored in a vector database**, ready for fast searching
+
+**Stage B: answering a question (happens live) — two steps**
+
 | Step | What happens |
 |---|---|
-| **1. Retrieval** | Given a user query, the system **retrieves relevant information from the previously created vector databases**, based on **semantic similarity between the embeddings of the prompt and those of the chunks** |
-| **2. Generation** | The **retrieved information is fed to the LLM**, which generates a response **combining its existing knowledge with the newly acquired data** |
+| **1. Retrieval** | Your question is converted to an embedding, then the system finds the **chunks closest in meaning** — this is **semantic similarity**, not keyword matching |
+| **2. Generation** | Those chunks get handed to the LLM, which writes an answer **combining what it already knew with what it just looked up** |
 
-> **The key sentence:** a relevant response is "**deeply rooted in relevant, accurate, and
-> contextually appropriate information gathered during the retrieval process** … not only based on
-> the model's pre-existing training but also **enriched with precise data pertinent to the prompt**."
+**Retrieval, then Generation. That's the exam answer.** Chunking and embedding happen earlier, in
+preparation — not at runtime.
 
-## RAG in software testing — why it matters
-> It enables LLM-powered test infrastructure to access **the company's enterprise data sources**
-> — **databases, documentation, and repositories** — to retrieve **contextual information in real
-> time**, ensuring test tasks such as **test analysis or test design** are **aligned with the
-> latest specifications, requirements, and existing test data**.
+### Why testers care
 
-🧠 **Memory hook: RAG = "look it up before you answer."**
-The magic numbers: **256–512 tokens per chunk**, **2 steps (Retrieval → Generation)**.
-
-⚠️ **Traps:**
-- RAG does **not** change the model's weights. **Fine-tuning changes weights; RAG does not.**
-- Retrieval is by **semantic similarity of embeddings**, not keyword matching.
-- Chunking exists for **focused retrieval AND context-window compatibility** — both reasons.
+RAG lets the AI reach **your company's actual data** — databases, documentation, repositories —
+**in real time**. So test analysis and test design get based on the **latest specifications and
+requirements**, not on whatever the model absorbed during training.
 
 ---
 
-# STEP 3 — LLM-powered agents (GenAI-4.1.3, K2)
+## Topic 3 — Agents: AI that does things
 
-**Definition:** "Specialized GenAI applications powered by LLMs, designed for **semi-autonomous
-or autonomous processing of defined tasks**."
-*(Glossary: "An application that integrates **LLM reasoning, decision-making, and memory, using
-tools to perform tasks**.")*
+An **LLM-powered agent** is an application that handles defined tasks **semi-autonomously or
+autonomously**.
 
-## The defining difference from a chatbot
-> "Unlike traditional AI chatbots that focus **solely on question-response interactions**,
-> LLM-powered agents can **perform tasks or 'act' by invoking a predefined set of functions,
-> commonly referred to as 'tools'**. This allows them to **interact with and manipulate external
-> systems**."
+### The one difference that matters
 
-🧠 **Chatbot answers. Agent acts — using tools.**
+> A chatbot **answers**. An agent **acts** — by calling a set of predefined functions called **tools**.
 
-## Degrees of autonomy
-| Type | Definition |
-|---|---|
-| **Autonomous agents** | Operate **independently**, performing tasks with **minimal human intervention**, using **predefined rules, reinforcement learning, and adaptive feedback loops** |
-| **Semi-autonomous agents** | Perform tasks with **periodic human oversight** to ensure output meets user-defined goals |
+Having tools lets it **interact with and change external systems**. It doesn't just tell you to run
+the regression suite; it runs it.
 
-## Multi-agent architectures and orchestration
-> "A **collaborative system where several agents, each with specialized roles, communicate and
-> coordinate** to solve complex problems more efficiently than a single agent. This coordinated
-> effort among multiple AI agents is known as **'orchestration'**."
+That's the distinction the exam tests. The official glossary says an agent integrates
+**LLM reasoning, decision-making and memory, using tools to perform tasks**.
 
-## Application in testing
-Exposed to users as **AI assistants integrated into the testing workflow**. They can automate
-activities **across the entire test lifecycle** by transforming user stories or requirements into
-test artefacts: **test analysis, test design, test implementation, test execution, and test
-reporting** — in a **semi-autonomous** manner.
+### Two levels of independence
 
-> **The key phrase:** this shifts test automation "**from script-based execution to goal-driven,
-> agent-based test automation**."
+**Autonomous agents** — work **independently with minimal human involvement**, using predefined
+rules, reinforcement learning and adaptive feedback loops.
 
-## ⚠️ The mandatory caveat
-> "However, these agents **suffer from the same problems of possible hallucinations, reasoning
-> errors, and biases** observed when using LLMs."
+**Semi-autonomous agents** — work with **periodic human oversight** to make sure the output matches
+what you wanted.
 
-**Two mitigations given:**
-1. **Implementing automated verification procedures for the agents' results**
-2. **Using semi-autonomous agents for critical tasks**
+### Multiple agents working together
 
-⚠️ This is a very likely question: *for a critical test task, which agent type?* → **semi-autonomous**.
+A **multi-agent architecture** has several agents, each with a specialised role, **communicating and
+coordinating** to solve bigger problems.
+
+That coordination has a name: **orchestration**.
+
+### What they do in testing
+
+They usually appear as **AI assistants built into your testing workflow**. They can take user stories
+or requirements and carry them through **test analysis, design, implementation, execution and
+reporting** — semi-autonomously.
+
+The syllabus describes this as a shift **from script-based execution to goal-driven, agent-based test
+automation**. You tell it the goal; it works out the steps.
+
+### The warning
+
+> Agents have **exactly the same hallucination, reasoning-error and bias problems** as any LLM.
+
+Two ways to manage that:
+1. **Automated verification of the agent's results**
+2. **Use semi-autonomous agents for critical tasks** — keep a human in the loop
+
+> ⚠️ Likely question: *which agent type for a critical test task?* → **semi-autonomous**.
 
 ---
 
-# STEP 4 — Fine-tuning (GenAI-4.2.1, K2)
+## Topic 4 — Fine-tuning: retraining a model for your work
 
-**Definition:** "**Adapts a pre-trained Language Model** (LLM or SLM) to perform **specific tasks
-or tailor it to particular domains**. This involves **further training the model on a targeted
-dataset**, allowing it to learn **domain-specific knowledge and nuances**."
-*(Glossary: "A **supervised learning** process using a **dataset of labeled examples** to
-**update LLM weights**.")*
+**Fine-tuning** means taking a pre-trained model and **training it further on your own targeted
+dataset**, so it learns your domain.
 
-## When is it suitable?
-- Equipping generic LLMs with **specialized reasoning abilities** relevant to a specific domain
-- Adopting a **vocabulary unique to that field**
+Technically: **supervised learning on labelled examples that updates the model's weights.**
 
-## The SLM advantage (examinable)
-> "Fine-tuning can also be applied to smaller models, known as **SLMs, which are less resource
-> intensive**. By fine-tuning an SLM, one can achieve **higher performance levels for specific
-> tasks without the same computational overhead required for LLMs**."
+The "updates the weights" bit is what separates it from RAG.
 
-**Testing example:** fine-tuning enables an LLM or SLM to **generate test cases from user stories
-in an output format specific to the organization's context**, by training on **the organization's
-own user stories and corresponding test cases** — aligning the model with the organization's
-**test process and terminology**.
+### What it's good for
 
-## The four challenges — memorise these
-| Challenge | Detail |
+- Giving a general model **specialist reasoning** for your domain
+- Teaching it **vocabulary specific to your field**
+
+**Testing example from the syllabus:** train a model on **your organisation's own user stories and
+the test cases written from them**. Now it generates test cases **in your house format, using your
+terminology**.
+
+### The small-model advantage
+
+You can fine-tune an **SLM** (small language model) too. They're **less resource-hungry**, and a
+fine-tuned SLM can hit **high performance on a specific task without the computing overhead of a
+large model**.
+
+So small + specialised can beat big + general for a narrow job.
+
+### Four problems with fine-tuning
+
+| Problem | What it means |
 |---|---|
-| **Biased or inaccurate results** | Avoided by ensuring **high-quality, task-specific training datasets** |
-| **Overfitting** | "Model becomes **too specialized to the training data**, negatively impacting performance on **new, unseen data**" — mitigate to **maintain generalization** |
-| **Opacity** | "**Lack of transparency in how an LLM makes its decisions or produces its outputs**" — **complicates debugging and validation** |
-| **Computational resources** | Managing the **significant computational resources required** (for LLMs) |
+| **Bias or inaccuracy** | Fixed by using **high-quality, task-specific training data** |
+| **Overfitting** | The model gets **too specialised to its training data** and **performs badly on anything new** |
+| **Opacity** | You **can't see how it reaches its decisions**, which **makes debugging and validation hard** |
+| **Computational cost** | Fine-tuning a large model takes **significant computing resources** |
 
-🧠 **B-O-O-C:** Bias, Overfitting, Opacity, Computational cost.
-
-## ⭐ RAG vs Fine-tuning — the comparison ISTQB loves
+### RAG vs fine-tuning — the comparison the exam loves
 
 | | **RAG** | **Fine-tuning** |
 |---|---|---|
-| **Changes model weights?** | **No** | **Yes** (supervised learning, labeled examples) |
-| **How it adds knowledge** | **Retrieves external data at runtime** | **Bakes knowledge in during training** |
-| **Best for** | **Current, changing enterprise data** — latest specs, requirements, test data | **Domain vocabulary, organization-specific output formats, specialized reasoning** |
-| **Cost profile** | Vector DB + retrieval infrastructure | **Significant computational resources**; cheaper with an SLM |
-| **Freshness** | **Real time** | Fixed at training time |
+| **Does it change the model?** | **No** | **Yes — updates the weights** |
+| **How it gets knowledge** | **Looks it up when asked** | **Learned it during training** |
+| **Best for** | **Information that changes** — current specs, requirements, test data | **Your house style, vocabulary, specialist reasoning** |
+| **How current is it?** | **Live** | **Frozen at training time** |
+
+Simple version: **RAG gives it a library card. Fine-tuning sends it to school.**
 
 ---
 
-# STEP 5 — LLMOps (GenAI-4.2.2, K2)
+## Topic 5 — LLMOps: running this stuff properly
 
-**Definition:** "**LLMOps, or Large Language Model Operations**, refers to the **set of practices,
-tools, and processes designed to streamline the development, deployment, and maintenance of LLMs
-in production environments**."
-*(Glossary: "Practices and tools focused on **deploying, monitoring, and maintaining LLMs in
-production environments**.")*
+**LLMOps** = **Large Language Model Operations**. It's the **practices, tools and processes for
+developing, deploying and maintaining LLMs in production**.
 
-## The three deployment approaches — learn what is distinctive about each
+Think DevOps, but for language models.
 
-| Approach | Primary considerations | Distinctive point |
+### Three ways an organisation can adopt GenAI
+
+| Approach | Main things to think about | The distinctive bit |
 |---|---|---|
-| **1. Using an AI chatbot** | **Managing data privacy and security risks while optimizing cost** | Choose **LLM-as-a-Service platforms** (if assurances are given) **or deploy in-house infrastructure using open-source licensed LLMs for greater control**. Requires **rigorous assessment of vendor assurances or internal capabilities** |
-| **2. Using a test tool with GenAI capabilities** | Similar (privacy, security, operational costs) **plus** evaluating the **data security and performance assurances offered by the test tool provider** | These tools **typically complement existing test processes**, requiring a **thorough cost-benefit analysis and risk assessment** |
-| **3. In-house development of a GenAI-based test tool** | **Comprehensive control** of data privacy and security risks | Careful planning for **AI resource utilization** — **computational resources, data storage, and staff training**. Needs **structured processes for validating and maintaining** GenAI-specific developments, and **expertise in implementing and deploying an LLM-powered test infrastructure** |
+| **1. Use an AI chatbot** | **Privacy, security, cost** | Either a **cloud LLM-as-a-Service**, or **run open-source models in-house for more control**. Either way you must **rigorously assess the vendor's assurances or your own capability** |
+| **2. Use a test tool with GenAI built in** | Same, **plus** the **tool vendor's security and performance guarantees** | These **complement your existing process**, so you need a **cost-benefit analysis and risk assessment** |
+| **3. Build your own** | **Full control** of privacy and security | Requires planning for **computing resources, data storage and staff training**, **structured validation processes**, and **real expertise** to build it |
 
-> **The closing sentence — a very likely question:**
-> "These approaches are **not mutually exclusive** … an organization **might utilize an AI chatbot
-> for some tasks while developing custom tools for others**. Thus, they **may be implemented
-> simultaneously** depending on the specific test activities involved. Furthermore, they can
-> incorporate **additional technologies, such as RAG and fine-tuning**."
+### The point the exam will test
 
-⚠️ **Trap:** an option stating an organization must choose one approach is **wrong**.
+> These approaches are **not mutually exclusive**. An organisation might **use a chatbot for some
+> tasks while building custom tools for others** — **at the same time**.
 
----
+And you can layer **RAG and fine-tuning** on top of any of them.
 
-# ⚠️ Chapter 4 exam traps
-
-1. **Agent vs chatbot: the agent ACTS by invoking tools.** That is the whole distinction.
-2. **Semi-autonomous agents for critical tasks** (periodic human oversight).
-3. **Agents inherit hallucinations, reasoning errors and biases.** They are not a fix for Ch.3.
-4. **RAG does not update weights; fine-tuning does.**
-5. **RAG is two steps: Retrieval → Generation.** Chunks are **256–512 tokens**.
-6. **Vector DB = semantic retrieval via embeddings; relational DB = structured test data.**
-7. **The back end post-processes LLM output** before it reaches the front-end.
-8. **Overfitting = too specialised to training data, fails on unseen data.**
-9. **Opacity = lack of transparency in decision-making, complicating debugging and validation.**
-10. **The three LLMOps approaches are not mutually exclusive.**
-11. **Fine-tuned SLMs can beat LLMs on specific tasks at lower computational cost.**
+⚠️ Any option saying you must pick one approach is **wrong**.
 
 ---
 
-# ✅ Chapter 4 self-check
+## Traps to watch for
 
-1. Name the three architectural components of an LLM-powered test infrastructure.
-2. What two kinds of database does the back end integrate, and what is each for?
-3. What does the back end do to the LLM's raw output?
-4. What are the two runtime steps of RAG?
-5. What chunk size does the syllabus give, and why is chunking done?
-6. What single capability distinguishes an LLM-powered agent from a chatbot?
+1. **Agent vs chatbot: the agent acts, using tools.** That's the entire distinction.
+2. **Critical tasks → semi-autonomous agents** (human oversight).
+3. **Agents don't fix Chapter 3's problems** — they inherit all of them.
+4. **RAG doesn't change the model. Fine-tuning does.**
+5. **RAG at runtime = Retrieval then Generation.** Chunks are **256–512 tokens**.
+6. **Vector DB = meaning-based search. Relational DB = structured test data.**
+7. **The back end post-processes the output** before you see it.
+8. **Overfitting = too specialised to training data, fails on new data.**
+9. **Opacity = can't see how it decides, so debugging is hard.**
+10. **The three LLMOps approaches can be combined.**
+11. **A fine-tuned SLM can outperform a large model** on a specific task, more cheaply.
+
+---
+
+## Quick self-check
+
+1. Name the three architectural pieces.
+2. What two database types does the back end use, and what for?
+3. What does the back end do to the raw output?
+4. What are RAG's two runtime steps?
+5. What chunk size, and why chunk at all?
+6. What single ability separates an agent from a chatbot?
 7. What is orchestration?
-8. Which agent type should be used for critical test tasks, and why?
-9. Define fine-tuning, including what it updates.
-10. Name the four challenges of fine-tuning.
+8. Which agent type for critical tasks, and why?
+9. What does fine-tuning actually change?
+10. Name the four fine-tuning problems.
 11. What is overfitting? What is opacity?
-12. Name the three LLMOps deployment approaches.
-13. Must an organization choose only one of them?
+12. Name the three LLMOps approaches.
+13. Must you pick just one?
 
 <details><summary>Answers</summary>
 
-1. **Front-end, back-end, and the LLM** (plus external data sources).
-2. **Relational databases** for **structured data used in testing, such as test cases**;
-   **vector databases** for **semantic retrieval of related content using embeddings**.
-3. **Post-processing** — enhancing it so responses **align with the test conditions of the test
-   process** before presentation.
-4. **1. Retrieval** (semantic similarity between prompt embeddings and chunk embeddings);
-   **2. Generation** (retrieved info fed to the LLM, which combines it with existing knowledge).
-5. **256–512 tokens**, to ensure **focused retrieval** and **compatibility with the model's
-   context window**.
-6. It can **perform tasks or "act" by invoking a predefined set of functions, called "tools"**,
-   letting it interact with and manipulate external systems.
-7. **The coordinated effort among multiple AI agents** in a multi-agent architecture, where
-   several specialized agents communicate and coordinate.
-8. **Semi-autonomous** — it performs tasks with **periodic human oversight** to ensure output
-   meets user-defined goals.
-9. **Further training a pre-trained LLM/SLM on a targeted dataset** to learn domain-specific
-   knowledge; it is **supervised learning on labeled examples that updates the model's weights**.
-10. **Bias/inaccuracy** (needs high-quality task-specific data), **overfitting**, **opacity**,
-    and **significant computational resources**.
-11. **Overfitting** = the model becomes too specialized to the training data, harming performance
-    on new, unseen data. **Opacity** = lack of transparency in how the LLM makes decisions or
-    produces outputs, which complicates debugging and validation.
-12. **(1)** Using an AI chatbot; **(2)** using a test tool with GenAI capabilities;
-    **(3)** in-house development of a GenAI-based test tool.
-13. **No** — they are **not mutually exclusive** and may be implemented **simultaneously**.
+1. **Front end, back end, and the LLM** (plus external data sources).
+2. **Relational** for **structured test data like test cases**; **vector** for **semantic retrieval
+   using embeddings**.
+3. **Post-processes it**, so responses fit the test conditions of the test process.
+4. **1. Retrieval** (finding chunks by semantic similarity); **2. Generation** (the LLM combines them
+   with what it knows).
+5. **256–512 tokens**, for **focused retrieval** and to **fit the context window**.
+6. It can **act by invoking predefined functions called tools**, letting it interact with external
+   systems.
+7. **Several specialised agents communicating and coordinating** in a multi-agent architecture.
+8. **Semi-autonomous** — it has **periodic human oversight**.
+9. **The model's weights**, through supervised learning on labelled examples.
+10. **Bias/inaccuracy**, **overfitting**, **opacity**, **computational cost**.
+11. **Overfitting** — too specialised to the training data, so it does badly on new data.
+    **Opacity** — you can't see how it makes decisions, which complicates debugging and validation.
+12. **(1)** An AI chatbot; **(2)** a test tool with GenAI built in; **(3)** building your own.
+13. **No** — they're **not mutually exclusive** and can run at the same time.
 </details>
